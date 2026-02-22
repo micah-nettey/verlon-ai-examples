@@ -1,0 +1,18 @@
+{
+  "name": "quickstart-example",
+  "version": "1.0.0",
+  "description": "Example project to verify Layer AI quickstart documentation",
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@layer-ai/sdk": "^2.5.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
