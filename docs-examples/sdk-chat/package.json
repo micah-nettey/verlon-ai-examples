@@ -1,0 +1,21 @@
+{
+  "name": "sdk-chat-example",
+  "version": "1.0.0",
+  "description": "Verification examples for Layer AI SDK chat documentation",
+  "type": "module",
+  "scripts": {
+    "basic": "tsx basic.ts",
+    "streaming": "tsx streaming.ts",
+    "vision": "tsx vision.ts",
+    "function-calling": "tsx function-calling.ts"
+  },
+  "dependencies": {
+    "@layer-ai/sdk": "^2.5.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
