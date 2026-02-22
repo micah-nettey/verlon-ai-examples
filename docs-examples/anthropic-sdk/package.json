@@ -1,0 +1,19 @@
+{
+  "name": "anthropic-sdk-example",
+  "version": "1.0.0",
+  "description": "Example project to verify Layer AI Anthropic SDK documentation",
+  "type": "module",
+  "scripts": {
+    "basic": "tsx basic.ts",
+    "streaming": "tsx streaming.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
