@@ -1,0 +1,17 @@
+{
+  "name": "sdk-video-examples",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "basic": "tsx basic.ts",
+    "sizes": "tsx sizes.ts"
+  },
+  "dependencies": {
+    "@layer-ai/sdk": "^2.5.11",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.21.0"
+  }
+}
