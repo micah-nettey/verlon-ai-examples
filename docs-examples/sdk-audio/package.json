@@ -1,0 +1,18 @@
+{
+  "name": "sdk-audio-examples",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "basic": "tsx basic.ts",
+    "voices": "tsx voices.ts",
+    "formats": "tsx formats.ts"
+  },
+  "dependencies": {
+    "@layer-ai/sdk": "^2.5.11",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.21.0"
+  }
+}
