@@ -6,11 +6,15 @@
   "type": "module",
   "scripts": {
     "research": "tsx --env-file=.env.local src/agents/research.ts",
+    "support": "tsx --env-file=.env.local src/agents/customer-support.ts",
+    "extract": "tsx --env-file=.env.local src/agents/doc-extractor.ts",
+    "setup-gates": "tsx --env-file=.env.local src/scripts/setup-gates.ts",
     "build": "tsc",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.0"
+    "@anthropic-ai/sdk": "^0.71.0",
+    "openai": "^6.17.0"
   },
   "devDependencies": {
     "@types/node": "^20",
