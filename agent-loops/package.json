@@ -9,6 +9,7 @@
     "support": "tsx --env-file=.env.local src/agents/customer-support.ts",
     "extract": "tsx --env-file=.env.local src/agents/doc-extractor.ts",
     "setup-gates": "tsx --env-file=.env.local src/scripts/setup-gates.ts",
+    "simulate": "tsx --env-file=.env.local src/scripts/simulate-sessions.ts",
     "build": "tsc",
     "type-check": "tsc --noEmit"
   },
