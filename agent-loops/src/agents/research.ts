@@ -241,9 +241,14 @@ interface SessionResult {
   answer: string;
 }
 
-export async function answerOne(question: string): Promise<SessionResult> {
+export async function answerOne(
+  question: string,
+  // Optional — pass an explicit sessionId so a multi-turn simulator
+  // can roll several questions up under one Layer agent_session.
+  sessionIdArg?: string
+): Promise<SessionResult> {
   const client = buildAnthropicClient();
-  const sessionId = randomUUID();
+  const sessionId = sessionIdArg ?? randomUUID();
   const useLayer = process.env.USE_LAYER === 'true';
   console.log(
     `\n=== research session ${sessionId.slice(0, 8)} ${useLayer ? '(via Layer)' : '(direct Anthropic)'} ===`
@@ -278,15 +283,20 @@ function extractText(res: Anthropic.Message): string {
 }
 
 // ----------------------------------------------------------------------
-// CLI
+// CLI — only fire when this file is the entry point. Importing
+// `answerOne` from a sibling script (e.g. simulate-research-sessions)
+// must NOT trigger the CLI.
 // ----------------------------------------------------------------------
 
-const question = process.argv.slice(2).join(' ').trim();
-if (!question) {
-  console.error('Usage: pnpm research "your question here"');
-  process.exit(1);
+const isEntry = import.meta.url === `file://${process.argv[1]}`;
+if (isEntry) {
+  const question = process.argv.slice(2).join(' ').trim();
+  if (!question) {
+    console.error('Usage: pnpm research "your question here"');
+    process.exit(1);
+  }
+  answerOne(question).catch((err) => {
+    console.error('Crashed:', err);
+    process.exit(1);
+  });
 }
-answerOne(question).catch((err) => {
-  console.error('Crashed:', err);
-  process.exit(1);
-});

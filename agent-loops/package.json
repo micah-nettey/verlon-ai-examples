@@ -10,6 +10,10 @@
     "extract": "tsx --env-file=.env.local src/agents/doc-extractor.ts",
     "setup-gates": "tsx --env-file=.env.local src/scripts/setup-gates.ts",
     "simulate": "tsx --env-file=.env.local src/scripts/simulate-sessions.ts",
+    "simulate-research": "tsx --env-file=.env.local src/scripts/simulate-research-sessions.ts",
+    "simulate-extractions": "tsx --env-file=.env.local src/scripts/simulate-extractions.ts",
+    "simulate-all": "tsx --env-file=.env.local src/scripts/simulate-all.ts",
+    "trigger-ian": "tsx --env-file=.env.local src/scripts/trigger-ian.ts",
     "build": "tsc",
     "type-check": "tsc --noEmit"
   },

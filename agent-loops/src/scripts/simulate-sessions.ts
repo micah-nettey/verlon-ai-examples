@@ -17,6 +17,10 @@
 import { randomUUID } from 'node:crypto';
 import type OpenAI from 'openai';
 import { buildOpenAIClient, layerHeaders } from '../lib/openai-client.js';
+import {
+  SUPPORT_SCENARIOS,
+  type SupportScenario,
+} from '../scenarios/support-scenarios.js';
 
 const CLASSIFIER_MODEL = 'gpt-4o-mini';
 const SPECIALIST_MODEL = 'gpt-4o';
@@ -67,38 +71,9 @@ const CLASSIFY_TOOL: OpenAI.Chat.ChatCompletionTool = {
 };
 
 // ----------------------------------------------------------------------
-// One scenario = one session = ordered list of user turns.
+// Scenarios live in src/scenarios/support-scenarios.ts so the same
+// curated set can be replayed by simulate-all.ts without duplication.
 // ----------------------------------------------------------------------
-
-interface Scenario {
-  name: string;
-  turns: string[];
-}
-
-const SCENARIOS: Scenario[] = [
-  {
-    // Designed to pivot mid-session — billing question, then a
-    // technical follow-up, then a general thank-you. The classifier
-    // should route each turn to a different specialist.
-    name: 'pivoting customer',
-    turns: [
-      "Hi — I noticed I haven't been charged for last month. When does my renewal hit?",
-      "Got it, thanks. Separate question: my SDK keeps timing out on completions over 20 seconds. We're using the Node SDK on Railway. Any common cause?",
-      'Great, will try that. Last thing — do I need to update my email preferences anywhere to stop getting product newsletters?',
-    ],
-  },
-  {
-    // Designed to stay in one specialist all session — a multi-turn
-    // technical debugging conversation. Tests that the specialist
-    // sees prior turns and references them.
-    name: 'technical deep dive',
-    turns: [
-      'My API calls are returning 429 rate-limit errors after just a few requests. We just upgraded to the Growth tier yesterday.',
-      'The errors are coming from our background worker which fans out 10 requests at a time. Could that be the issue?',
-      'OK so the per-minute limit is the cap, not concurrent connections. What\'s the right pattern — should I add a token bucket on our side or rely on backoff?',
-    ],
-  },
-];
 
 interface Turn {
   user: string;
@@ -115,7 +90,7 @@ interface SessionRecord {
 
 async function runScenario(
   client: OpenAI,
-  scenario: Scenario
+  scenario: SupportScenario
 ): Promise<SessionRecord> {
   const sessionId = randomUUID();
   console.log(
@@ -216,7 +191,7 @@ async function main() {
   }
 
   const records: SessionRecord[] = [];
-  for (const scenario of SCENARIOS) {
+  for (const scenario of SUPPORT_SCENARIOS) {
     records.push(await runScenario(client, scenario));
   }
 

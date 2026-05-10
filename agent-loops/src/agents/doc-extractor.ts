@@ -127,15 +127,19 @@ export async function extractOne(passage: string): Promise<{
 }
 
 // ----------------------------------------------------------------------
-// CLI
+// CLI — only fire when this is the entry module, so simulators that
+// import { extractOne } don't trigger the argv parse + process.exit.
 // ----------------------------------------------------------------------
 
-const passage = process.argv.slice(2).join(' ').trim();
-if (!passage) {
-  console.error('Usage: pnpm extract "passage to extract from"');
-  process.exit(1);
+const isEntry = import.meta.url === `file://${process.argv[1]}`;
+if (isEntry) {
+  const passage = process.argv.slice(2).join(' ').trim();
+  if (!passage) {
+    console.error('Usage: pnpm extract "passage to extract from"');
+    process.exit(1);
+  }
+  extractOne(passage).catch((err) => {
+    console.error('Crashed:', err);
+    process.exit(1);
+  });
 }
-extractOne(passage).catch((err) => {
-  console.error('Crashed:', err);
-  process.exit(1);
-});
