@@ -17,6 +17,7 @@
 import { randomUUID } from 'node:crypto';
 import type OpenAI from 'openai';
 import { buildOpenAIClient, layerHeaders } from '../lib/openai-client.js';
+import { generateNextUserTurn } from '../lib/user-simulator.js';
 import {
   SUPPORT_SCENARIOS,
   type SupportScenario,
@@ -25,6 +26,23 @@ import {
 const CLASSIFIER_MODEL = 'gpt-4o-mini';
 const SPECIALIST_MODEL = 'gpt-4o';
 const MAX_TOKENS = 1024;
+
+// How long simulated sessions should run. The scripted scenarios
+// usually cap at 2–3 turns; after that, the user-simulator generates
+// plausible follow-ups until we hit TARGET_TURNS or the simulator
+// signals the conversation is naturally complete. Override via env.
+const TARGET_TURNS = Number(process.env.TARGET_TURNS || 20);
+
+// Multiple passes through the SUPPORT_SCENARIOS list, each pass with
+// fresh sessionIds so the same scenario can produce several distinct
+// sessions. Default 2 → ~60 sessions across 30 scenarios.
+const PASSES = Number(process.env.PASSES || 2);
+
+const USER_PERSONA = {
+  role: 'customer-support inbound',
+  guidance:
+    'You are a paying SaaS customer talking to support. You start with a real concern, ask follow-ups when answers raise new questions, and behave like a normal user (sometimes grateful, sometimes frustrated, sometimes confused). When everything you came for has been answered and a real person would just say "thanks, that\'s all," set shouldContinue=false.',
+};
 
 // ----------------------------------------------------------------------
 // Gate routing — mirrors customer-support.ts.
@@ -88,13 +106,93 @@ interface SessionRecord {
   turns: Turn[];
 }
 
+async function runOneTurn(
+  client: OpenAI,
+  sessionId: string,
+  userText: string,
+  history: OpenAI.Chat.ChatCompletionMessageParam[],
+  turnNumber: number
+): Promise<Turn> {
+  history.push({ role: 'user', content: userText });
+  console.log(`\n[turn ${turnNumber}] user: ${userText}`);
+
+  // Classifier — call goes to AGENT_SUPPORT_GATE_ID so the agent
+  // gate opens the session on turn 1 and joins it on subsequent
+  // turns. Same sessionId throughout.
+  const classifyRes = await client.chat.completions.create(
+    {
+      model: CLASSIFIER_MODEL,
+      max_tokens: 256,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are the router for a customer-support agent. Look at the latest user message in context of the conversation history and pick which specialist should answer. Always call the route_ticket function.',
+        },
+        ...history,
+      ],
+      tools: [CLASSIFY_TOOL],
+      tool_choice: { type: 'function', function: { name: 'route_ticket' } },
+    },
+    {
+      headers: layerHeaders({
+        gateIdEnvVar: 'AGENT_SUPPORT_GATE_ID',
+        sessionId,
+      }),
+    }
+  );
+
+  const call = classifyRes.choices[0]?.message?.tool_calls?.[0];
+  if (!call || call.type !== 'function') {
+    throw new Error('Classifier did not emit a function call');
+  }
+  const decision = JSON.parse(call.function.arguments) as {
+    specialist: Specialist;
+    reasoning: string;
+  };
+  console.log(
+    `  [classifier] specialist=${decision.specialist} — ${decision.reasoning}`
+  );
+
+  // Specialist — call goes to the chosen sub-gate, same sessionId.
+  const specialistRes = await client.chat.completions.create(
+    {
+      model: SPECIALIST_MODEL,
+      max_tokens: MAX_TOKENS,
+      messages: [
+        { role: 'system', content: SPECIALIST_SYSTEMS[decision.specialist] },
+        ...history,
+      ],
+    },
+    {
+      headers: layerHeaders({
+        gateIdEnvVar: SPECIALIST_GATE_ENV[decision.specialist],
+        sessionId,
+      }),
+    }
+  );
+
+  const reply =
+    specialistRes.choices[0]?.message?.content?.trim() ||
+    '(no text returned)';
+  history.push({ role: 'assistant', content: reply });
+  console.log(`  [${decision.specialist}] ${reply}`);
+
+  return {
+    user: userText,
+    specialist: decision.specialist,
+    reasoning: decision.reasoning,
+    assistant: reply,
+  };
+}
+
 async function runScenario(
   client: OpenAI,
   scenario: SupportScenario
 ): Promise<SessionRecord> {
   const sessionId = randomUUID();
   console.log(
-    `\n=== session ${sessionId.slice(0, 8)} — "${scenario.name}" (${scenario.turns.length} turns) ===`
+    `\n=== session ${sessionId.slice(0, 8)} — "${scenario.name}" (target ${TARGET_TURNS} turns) ===`
   );
 
   // Threaded history. Classifier sees the full transcript so it can
@@ -103,79 +201,44 @@ async function runScenario(
   const history: OpenAI.Chat.ChatCompletionMessageParam[] = [];
   const turns: Turn[] = [];
 
+  // 1. Scripted turns from the curated scenario — these seed the
+  // conversation with a coherent starting concern.
   for (let i = 0; i < scenario.turns.length; i++) {
-    const userText = scenario.turns[i];
-    history.push({ role: 'user', content: userText });
-    console.log(`\n[turn ${i + 1}] user: ${userText}`);
-
-    // Classifier — call goes to AGENT_SUPPORT_GATE_ID so the agent
-    // gate opens the session on turn 1 and joins it on subsequent
-    // turns. Same sessionId throughout.
-    const classifyRes = await client.chat.completions.create(
-      {
-        model: CLASSIFIER_MODEL,
-        max_tokens: 256,
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are the router for a customer-support agent. Look at the latest user message in context of the conversation history and pick which specialist should answer. Always call the route_ticket function.',
-          },
-          ...history,
-        ],
-        tools: [CLASSIFY_TOOL],
-        tool_choice: { type: 'function', function: { name: 'route_ticket' } },
-      },
-      {
-        headers: layerHeaders({
-          gateIdEnvVar: 'AGENT_SUPPORT_GATE_ID',
-          sessionId,
-        }),
-      }
+    const turn = await runOneTurn(
+      client,
+      sessionId,
+      scenario.turns[i],
+      history,
+      turns.length + 1
     );
+    turns.push(turn);
+  }
 
-    const call = classifyRes.choices[0]?.message?.tool_calls?.[0];
-    if (!call || call.type !== 'function') {
-      throw new Error('Classifier did not emit a function call');
+  // 2. Continuation — let the user-simulator drive plausible follow-up
+  // turns until TARGET_TURNS or it signals the conversation is done.
+  while (turns.length < TARGET_TURNS) {
+    let next;
+    try {
+      next = await generateNextUserTurn(history, USER_PERSONA);
+    } catch (err) {
+      console.warn(
+        `  [user-sim] failed to generate next turn — ending session early:`,
+        err instanceof Error ? err.message : err
+      );
+      break;
     }
-    const decision = JSON.parse(call.function.arguments) as {
-      specialist: Specialist;
-      reasoning: string;
-    };
-    console.log(
-      `  [classifier] specialist=${decision.specialist} — ${decision.reasoning}`
+    const turn = await runOneTurn(
+      client,
+      sessionId,
+      next.message,
+      history,
+      turns.length + 1
     );
-
-    // Specialist — call goes to the chosen sub-gate, same sessionId.
-    const specialistRes = await client.chat.completions.create(
-      {
-        model: SPECIALIST_MODEL,
-        max_tokens: MAX_TOKENS,
-        messages: [
-          { role: 'system', content: SPECIALIST_SYSTEMS[decision.specialist] },
-          ...history,
-        ],
-      },
-      {
-        headers: layerHeaders({
-          gateIdEnvVar: SPECIALIST_GATE_ENV[decision.specialist],
-          sessionId,
-        }),
-      }
-    );
-
-    const reply =
-      specialistRes.choices[0]?.message?.content?.trim() ||
-      '(no text returned)';
-    history.push({ role: 'assistant', content: reply });
-    console.log(`  [${decision.specialist}] ${reply}`);
-
-    turns.push({
-      user: userText,
-      specialist: decision.specialist,
-      reasoning: decision.reasoning,
-      assistant: reply,
-    });
+    turns.push(turn);
+    if (!next.shouldContinue) {
+      console.log(`  [user-sim] signaled conversation complete`);
+      break;
+    }
   }
 
   return { scenario: scenario.name, sessionId, turns };
@@ -191,8 +254,11 @@ async function main() {
   }
 
   const records: SessionRecord[] = [];
-  for (const scenario of SUPPORT_SCENARIOS) {
-    records.push(await runScenario(client, scenario));
+  for (let pass = 1; pass <= PASSES; pass++) {
+    console.log(`\n########## pass ${pass}/${PASSES} ##########\n`);
+    for (const scenario of SUPPORT_SCENARIOS) {
+      records.push(await runScenario(client, scenario));
+    }
   }
 
   console.log('\n\n=== summary ===');

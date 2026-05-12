@@ -15,6 +15,13 @@
 import { extractOne } from '../agents/doc-extractor.js';
 import { EXTRACTOR_PASSAGES } from '../scenarios/extractor-scenarios.js';
 
+// PASSES loops through every passage N times so we can scale up the
+// number of extractions without writing more scenarios. Each pass uses
+// a fresh sessionId per passage so Layer treats them as distinct
+// single-shot sessions. Default 2 → ~60 extractions for the 30
+// canned passages, comfortably above the 50/agent target.
+const PASSES = Number(process.env.PASSES || 2);
+
 interface ExtractionRecord {
   name: string;
   sessionId: string;
@@ -31,23 +38,25 @@ async function main() {
   }
 
   const records: ExtractionRecord[] = [];
-  for (let i = 0; i < EXTRACTOR_PASSAGES.length; i++) {
-    const p = EXTRACTOR_PASSAGES[i];
-    console.log(
-      `\n[${i + 1}/${EXTRACTOR_PASSAGES.length}] extracting "${p.name}"...`
-    );
-    try {
-      const { sessionId } = await extractOne(p.passage);
-      records.push({ name: p.name, sessionId, ok: true });
-    } catch (err: any) {
-      const msg = err?.message ?? String(err);
-      console.error(`  ✗ failed: ${msg}`);
-      records.push({
-        name: p.name,
-        sessionId: '',
-        ok: false,
-        errorMessage: msg,
-      });
+  const total = EXTRACTOR_PASSAGES.length * PASSES;
+  let n = 0;
+  for (let pass = 1; pass <= PASSES; pass++) {
+    for (const p of EXTRACTOR_PASSAGES) {
+      n++;
+      console.log(`\n[${n}/${total}] extracting "${p.name}" (pass ${pass})...`);
+      try {
+        const { sessionId } = await extractOne(p.passage);
+        records.push({ name: p.name, sessionId, ok: true });
+      } catch (err: any) {
+        const msg = err?.message ?? String(err);
+        console.error(`  ✗ failed: ${msg}`);
+        records.push({
+          name: p.name,
+          sessionId: '',
+          ok: false,
+          errorMessage: msg,
+        });
+      }
     }
   }
 
