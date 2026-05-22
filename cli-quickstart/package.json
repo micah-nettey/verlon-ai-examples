@@ -1,0 +1,12 @@
+{
+  "name": "layer-ai-cli-quickstart",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Minimal example: install the Layer AI CLI and exercise it from an isolated repo.",
+  "scripts": {
+    "smoke": "bash ./smoke.sh"
+  },
+  "devDependencies": {
+    "@layer-ai/cli": "^1.0.2"
+  }
+}
