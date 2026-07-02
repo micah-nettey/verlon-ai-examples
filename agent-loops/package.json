@@ -1,7 +1,7 @@
 {
   "name": "agent-loops",
   "version": "0.1.0",
-  "description": "Production-style agent loops (Anthropic SDK + OpenAI SDK) demonstrating drop-in Layer adoption — change a base URL and one header, route through Layer.",
+  "description": "Production-style agent loops (Anthropic SDK + OpenAI SDK) demonstrating drop-in Verlon adoption — change a base URL and one header, route through Verlon.",
   "private": true,
   "type": "module",
   "scripts": {
