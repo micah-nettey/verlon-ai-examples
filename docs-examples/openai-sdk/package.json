@@ -1,7 +1,7 @@
 {
   "name": "openai-sdk-example",
   "version": "1.0.0",
-  "description": "Example project to verify Layer AI OpenAI SDK integration documentation",
+  "description": "Example project to verify Verlon AI OpenAI SDK integration documentation",
   "type": "module",
   "scripts": {
     "basic": "tsx basic.ts",
