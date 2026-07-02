@@ -1,6 +1,6 @@
 # Quickstart Example
 
-This example tests the code from the [Quickstart documentation](https://docs.uselayer.ai/getting-started/quickstart).
+This example tests the code from the [Quickstart documentation](https://docs.useverlon.ai/getting-started/quickstart).
 
 ## Setup
 
@@ -11,8 +11,8 @@ cp .env.example .env
 
 2. Fill in your credentials in `.env`:
 ```
-LAYER_API_KEY=your-actual-api-key
-GATE_ID=your-actual-gate-id
+VERLON_API_KEY=your-actual-api-key
+VERLON_GATE_ID=your-actual-gate-id
 ```
 
 3. Install dependencies:

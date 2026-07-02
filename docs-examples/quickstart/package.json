@@ -1,13 +1,13 @@
 {
   "name": "quickstart-example",
   "version": "1.0.0",
-  "description": "Example project to verify Layer AI quickstart documentation",
+  "description": "Example project to verify Verlon AI quickstart documentation",
   "type": "module",
   "scripts": {
     "start": "tsx index.ts"
   },
   "dependencies": {
-    "@layer-ai/sdk": "^2.5.0",
+    "@verlon-ai/sdk": "^1.2.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
