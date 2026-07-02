@@ -1,7 +1,7 @@
 {
   "name": "anthropic-sdk-example",
   "version": "1.0.0",
-  "description": "Example project to verify Layer AI Anthropic SDK documentation",
+  "description": "Example project to verify Verlon AI Anthropic SDK documentation",
   "type": "module",
   "scripts": {
     "basic": "tsx basic.ts",
