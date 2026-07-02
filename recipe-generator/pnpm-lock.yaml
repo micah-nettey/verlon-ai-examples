@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@layer-ai/sdk':
-        specifier: ^2.5.2
-        version: 2.5.2
+      '@verlon-ai/sdk':
+        specifier: ^1.2.0
+        version: 1.2.0
       cors:
         specifier: ^2.8.5
         version: 2.8.6
@@ -192,9 +192,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@layer-ai/sdk@2.5.2':
-    resolution: {integrity: sha512-MTgtsq5cgL6VQq8KB/kys6BNwCa8g8k0iitGPkb75/jNnKTP08gJjWtP9DNB0fZmu+fdzQdGLxlI4hIPQiz6pA==}
-
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -227,6 +224,9 @@ packages:
 
   '@types/serve-static@2.2.0':
     resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
+
+  '@verlon-ai/sdk@1.2.0':
+    resolution: {integrity: sha512-PmUk3OoTezMxDCzqDF7fZ4XZB20vi2qZYJ6MKPV9lmWunoafTwTkIsPb8byEvQt4zIllrmpc6T0vQuG1CO1wsA==}
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -607,11 +607,6 @@ snapshots:
   '@esbuild/win32-x64@0.27.2':
     optional: true
 
-  '@layer-ai/sdk@2.5.2':
-    dependencies:
-      yaml: 2.8.2
-      zod: 3.25.76
-
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
@@ -656,6 +651,11 @@ snapshots:
     dependencies:
       '@types/http-errors': 2.0.5
       '@types/node': 20.19.30
+
+  '@verlon-ai/sdk@1.2.0':
+    dependencies:
+      yaml: 2.8.2
+      zod: 3.25.76
 
   accepts@2.0.0:
     dependencies:
