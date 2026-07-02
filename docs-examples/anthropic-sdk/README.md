@@ -1,6 +1,6 @@
 # Anthropic SDK Integration Example
 
-This example demonstrates using Layer AI with the Anthropic SDK as documented in the Layer AI documentation.
+This example demonstrates using Verlon AI with the Anthropic SDK as documented in the Verlon AI documentation.
 
 ## Setup
 
@@ -10,8 +10,8 @@ cp .env.example .env
 ```
 
 2. Fill in your credentials in `.env`:
-- `LAYER_API_KEY`: Your Layer API key from https://uselayer.ai/dashboard
-- `GATE_ID`: Your gate UUID from the dashboard
+- `VERLON_API_KEY`: Your Verlon API key from https://verlon.ai/dashboard
+- `VERLON_GATE_ID`: Your gate UUID from the dashboard
 
 3. Install dependencies:
 ```bash
@@ -32,7 +32,7 @@ pnpm streaming
 
 ## What This Verifies
 
-- ✓ Anthropic SDK works with Layer's base URL
+- ✓ Anthropic SDK works with Verlon's base URL
 - ✓ `gateId` parameter works correctly
 - ✓ Streaming works as documented
 - ✓ Response format matches documentation

@@ -3,20 +3,20 @@ import Anthropic from '@anthropic-ai/sdk';
 
 config({ path: '.env', override: true });
 
-if (!process.env.LAYER_API_KEY || !process.env.GATE_ID) {
-  console.error('Error: LAYER_API_KEY and GATE_ID environment variables are required');
+if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
+  console.error('Error: VERLON_API_KEY and VERLON_GATE_ID environment variables are required');
   console.error('Copy .env.example to .env and fill in your credentials');
   process.exit(1);
 }
 
 const anthropic = new Anthropic({
-  baseURL: 'https://api.uselayer.ai',
-  apiKey: process.env.LAYER_API_KEY,
+  baseURL: 'https://api.verlon.ai',
+  apiKey: process.env.VERLON_API_KEY,
 });
 
-// @ts-ignore - gateId is a Layer AI extension
+// @ts-ignore - gateId is a Verlon AI extension
 const stream = await anthropic.messages.create({
-  gateId: process.env.GATE_ID,
+  gateId: process.env.VERLON_GATE_ID,
   max_tokens: 1024,
   messages: [
     { role: 'user', content: 'Tell me a short joke.' }
