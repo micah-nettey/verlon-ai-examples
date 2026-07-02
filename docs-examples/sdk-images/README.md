@@ -1,6 +1,6 @@
 # SDK Image Generation Examples
 
-This example demonstrates using Layer AI SDK for image generation as documented in the Layer AI documentation.
+This example demonstrates using Verlon AI SDK for image generation as documented in the Verlon AI documentation.
 
 ## Setup
 
@@ -10,8 +10,8 @@ cp .env.example .env
 ```
 
 2. Fill in your credentials in `.env`:
-- `LAYER_API_KEY`: Your Layer API key from https://uselayer.ai/dashboard
-- `GATE_ID`: Your image generation gate UUID from the dashboard
+- `VERLON_API_KEY`: Your Verlon API key from https://useverlon.ai/dashboard
+- `VERLON_GATE_ID`: Your image generation gate UUID from the dashboard
 
 3. Install dependencies:
 ```bash
