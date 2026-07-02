@@ -7,9 +7,9 @@
  * plausible next user turn, optionally signal that the conversation
  * is naturally complete.
  *
- * Calls go to the OpenAI API directly (NOT through Layer) — we don't
- * want the user-simulator traffic polluting the gate the agent is
- * being analyzed on.
+ * Calls go to the OpenAI API directly (NOT through Layer) — this is a
+ * simulation utility, not an agent under test, and routing it through
+ * Layer would pollute the test-gate analytics with simulator chatter.
  */
 
 import OpenAI from 'openai';
@@ -98,8 +98,8 @@ Always call the respond function.`;
     max_tokens: 256,
     messages: [
       { role: 'system', content: system },
-      // Recast assistant ↔ user so the simulator sees "the human" as the
-      // role it should be writing for.
+      // Recast assistant ↔ user so the simulator sees "the human" as
+      // the role it should be writing for.
       ...history.map((m) => {
         if (m.role === 'assistant') {
           return { role: 'user' as const, content: stringContent(m.content) };
