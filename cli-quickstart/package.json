@@ -7,6 +7,6 @@
     "smoke": "bash ./smoke.sh"
   },
   "devDependencies": {
-    "@layer-ai/cli": "^1.0.2"
+    "@layer-ai/cli": "^1.1.3"
   }
 }
