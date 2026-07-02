@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { layer } from '@/lib/layer';
+import { verlon } from '@/lib/verlon';
 
 export async function POST(req: NextRequest) {
   let messages: any[] | undefined;
@@ -15,10 +15,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const gateId = process.env.VERLON_GATE_ID;
+    if (!gateId) {
+      return NextResponse.json(
+        { error: 'VERLON_GATE_ID environment variable is required' },
+        { status: 500 }
+      );
+    }
+
     const startTime = Date.now();
 
-    const result = await layer.chat({
-      gateId: 'f6cc6bd9-4ec1-4ac2-8912-81a085255c35',
+    const result = await verlon.chat({
+      gateId,
       data: {
         messages,
       },
