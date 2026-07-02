@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { layer } from './lib/layer.js';
+import { verlon } from './lib/verlon.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,10 +28,19 @@ app.post('/recipe', async (req: Request, res: Response) => {
       return;
     }
 
+    const gateId = process.env.VERLON_GATE_ID;
+    if (!gateId) {
+      res.status(500).json({
+        error: 'Configuration error',
+        message: 'VERLON_GATE_ID environment variable is required',
+      });
+      return;
+    }
+
     const startTime = Date.now();
 
-    const result = await layer.chat({
-      gateId: 'f5ee5c20-8ab7-4119-8beb-3a6d70d9fb5d',
+    const result = await verlon.chat({
+      gateId,
       data: {
         messages: [
           // {

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Content Generator | Layer AI Demo",
-  description: "Generate blog outlines, social captions, and product descriptions with Layer AI's smart routing",
+  title: "AI Content Generator | Verlon AI Demo",
+  description: "Generate blog outlines, social captions, and product descriptions with Verlon AI's smart routing",
 };
 
 export default function RootLayout({

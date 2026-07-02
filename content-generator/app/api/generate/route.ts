@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { layer } from '@/lib/layer';
+import { verlon } from '@/lib/verlon';
 
 export async function POST(req: NextRequest) {
   let gateId: string | undefined;
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = await layer.chat({
+    const result = await verlon.chat({
       gateId,
       data: {
         messages: [

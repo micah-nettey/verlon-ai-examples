@@ -102,7 +102,7 @@ export default function ChatPage() {
               AI Chatbot
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Powered by Layer AI
+              Powered by Verlon AI
             </p>
           </div>
         </div>

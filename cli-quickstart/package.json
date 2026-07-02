@@ -1,0 +1,12 @@
+{
+  "name": "verlon-ai-cli-quickstart",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Minimal example: install the Verlon AI CLI and exercise it from an isolated repo.",
+  "scripts": {
+    "smoke": "bash ./smoke.sh"
+  },
+  "devDependencies": {
+    "@verlon-ai/cli": "^1.2.1"
+  }
+}

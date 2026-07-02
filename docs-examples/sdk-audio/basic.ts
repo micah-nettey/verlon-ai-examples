@@ -1,20 +1,20 @@
 import { config } from 'dotenv';
-import { Layer } from '@layer-ai/sdk';
+import { Verlon } from '@verlon-ai/sdk';
 
 config({ override: true });
 
-if (!process.env.LAYER_API_KEY || !process.env.GATE_ID) {
-  console.error('Error: LAYER_API_KEY and GATE_ID environment variables are required');
+if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
+  console.error('Error: VERLON_API_KEY and VERLON_GATE_ID environment variables are required');
   console.error('Copy .env.example to .env and fill in your credentials');
   process.exit(1);
 }
 
-const layer = new Layer({ apiKey: process.env.LAYER_API_KEY });
+const verlon = new Verlon({ apiKey: process.env.VERLON_API_KEY });
 
-const response = await layer.tts({
-  gateId: process.env.GATE_ID,
+const response = await verlon.tts({
+  gateId: process.env.VERLON_GATE_ID,
   data: {
-    input: 'Hello! Welcome to Layer AI text-to-speech. This is a basic example of converting text to audio.'
+    input: 'Hello! Welcome to Verlon AI text-to-speech. This is a basic example of converting text to audio.'
   }
 });
 
