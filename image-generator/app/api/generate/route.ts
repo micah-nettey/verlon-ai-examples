@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { layer } from '@/lib/layer';
+import { verlon } from '@/lib/verlon';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,10 +13,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const gateId = process.env.VERLON_GATE_ID;
+    if (!gateId) {
+      return NextResponse.json(
+        { error: 'VERLON_GATE_ID environment variable is required' },
+        { status: 500 }
+      );
+    }
+
     const startTime = Date.now();
 
-    const result = await layer.image({
-      gateId: 'e7f12750-c6dc-4138-a221-5ca071aaa6f0',
+    const result = await verlon.image({
+      gateId,
       data: {
         prompt: prompt,
       },
