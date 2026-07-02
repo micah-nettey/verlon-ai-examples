@@ -1,0 +1,29 @@
+{
+  "name": "agent-loops",
+  "version": "0.1.0",
+  "description": "Production-style agent loops (Anthropic SDK + OpenAI SDK) demonstrating drop-in Layer adoption — change a base URL and one header, route through Layer.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "research": "tsx --env-file=.env.local src/agents/research.ts",
+    "support": "tsx --env-file=.env.local src/agents/customer-support.ts",
+    "extract": "tsx --env-file=.env.local src/agents/doc-extractor.ts",
+    "setup-gates": "tsx --env-file=.env.local src/scripts/setup-gates.ts",
+    "simulate": "tsx --env-file=.env.local src/scripts/simulate-sessions.ts",
+    "simulate-research": "tsx --env-file=.env.local src/scripts/simulate-research-sessions.ts",
+    "simulate-extractions": "tsx --env-file=.env.local src/scripts/simulate-extractions.ts",
+    "simulate-all": "tsx --env-file=.env.local src/scripts/simulate-all.ts",
+    "trigger-ian": "tsx --env-file=.env.local src/scripts/trigger-ian.ts",
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "openai": "^6.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.20.0",
+    "typescript": "^5.5.0"
+  }
+}
