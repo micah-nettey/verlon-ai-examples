@@ -9,7 +9,7 @@
  * The point is to give Tracer + Cortex a per-request volume on the
  * doc-extractor gate so they have signal to analyze.
  *
- * Run via Layer:
+ * Run via Verlon:
  *   pnpm simulate-extractions
  */
 import { extractOne } from '../agents/doc-extractor.js';
@@ -17,7 +17,7 @@ import { EXTRACTOR_PASSAGES } from '../scenarios/extractor-scenarios.js';
 
 // PASSES loops through every passage N times so we can scale up the
 // number of extractions without writing more scenarios. Each pass uses
-// a fresh sessionId per passage so Layer treats them as distinct
+// a fresh sessionId per passage so Verlon treats them as distinct
 // single-shot sessions. Default 2 → ~60 extractions for the 30
 // canned passages, comfortably above the 50/agent target.
 const PASSES = Number(process.env.PASSES || 2);
@@ -30,10 +30,10 @@ interface ExtractionRecord {
 }
 
 async function main() {
-  const useLayer = process.env.USE_LAYER === 'true';
-  if (!useLayer) {
+  const useVerlon = process.env.USE_VERLON === 'true';
+  if (!useVerlon) {
     console.log(
-      '(USE_LAYER is not true — calls hit OpenAI directly, Layer-side gate metrics will not update.)'
+      '(USE_VERLON is not true — calls hit OpenAI directly, Verlon-side gate metrics will not update.)'
     );
   }
 

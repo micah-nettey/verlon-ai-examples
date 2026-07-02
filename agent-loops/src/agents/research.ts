@@ -1,8 +1,8 @@
 /**
  * Research assistant agent — built with the Anthropic SDK directly,
- * the way a typical customer would build it before adopting Layer.
+ * the way a typical customer would build it before adopting Verlon.
  *
- * Three call sites (each becomes a Layer "gate" later):
+ * Three call sites (each becomes a Verlon "gate" later):
  *   1. ORCHESTRATOR — picks which specialist handles the question.
  *      Declares one tool: route(action: 'quick' | 'search').
  *   2. QUICK ANSWER — answers from training knowledge, no tools.
@@ -13,18 +13,18 @@
  * Run direct against Anthropic:
  *   pnpm research "What's the capital of Mongolia?"
  *
- * Run through Layer (after the gates exist + IDs are in .env.local):
- *   USE_LAYER=true pnpm research "What did OpenAI announce last week?"
+ * Run through Verlon (after the gates exist + IDs are in .env.local):
+ *   USE_VERLON=true pnpm research "What did OpenAI announce last week?"
  *
  * The agent code itself does NOT change between the two modes — only
  * the SDK client init (in lib/anthropic-client.ts) and one extra
- * header per call. That diff is the entire "adopt Layer" story.
+ * header per call. That diff is the entire "adopt Verlon" story.
  */
 import { randomUUID } from 'node:crypto';
 import type Anthropic from '@anthropic-ai/sdk';
 import {
   buildAnthropicClient,
-  layerHeaders,
+  verlonHeaders,
 } from '../lib/anthropic-client.js';
 import { braveSearch } from '../lib/brave.js';
 
@@ -82,7 +82,7 @@ async function runOrchestrator(
       tool_choice: { type: 'tool', name: 'route' },
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: 'RESEARCH_ORCHESTRATOR_GATE_ID',
         sessionId,
       }),
@@ -114,7 +114,7 @@ async function runQuickAnswer(
       messages: [{ role: 'user', content: question }],
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: 'RESEARCH_QUICK_ANSWER_GATE_ID',
         sessionId,
       }),
@@ -173,7 +173,7 @@ async function runSearcher(
         tools: [WEB_SEARCH_TOOL],
       },
       {
-        headers: layerHeaders({
+        headers: verlonHeaders({
           gateIdEnvVar: 'RESEARCH_SEARCHER_GATE_ID',
           sessionId,
         }),
@@ -222,7 +222,7 @@ async function runSearcher(
       messages,
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: 'RESEARCH_SEARCHER_GATE_ID',
         sessionId,
       }),
@@ -244,14 +244,14 @@ interface SessionResult {
 export async function answerOne(
   question: string,
   // Optional — pass an explicit sessionId so a multi-turn simulator
-  // can roll several questions up under one Layer agent_session.
+  // can roll several questions up under one Verlon agent_session.
   sessionIdArg?: string
 ): Promise<SessionResult> {
   const client = buildAnthropicClient();
   const sessionId = sessionIdArg ?? randomUUID();
-  const useLayer = process.env.USE_LAYER === 'true';
+  const useVerlon = process.env.USE_VERLON === 'true';
   console.log(
-    `\n=== research session ${sessionId.slice(0, 8)} ${useLayer ? '(via Layer)' : '(direct Anthropic)'} ===`
+    `\n=== research session ${sessionId.slice(0, 8)} ${useVerlon ? '(via Verlon)' : '(direct Anthropic)'} ===`
   );
   console.log(`Q: ${question}`);
 

@@ -43,10 +43,10 @@ const STANDALONE_GATES = [
 ];
 
 async function main() {
-  const apiKey = process.env.LAYER_API_KEY;
-  const apiUrl = process.env.LAYER_API_URL;
+  const apiKey = process.env.VERLON_API_KEY;
+  const apiUrl = process.env.VERLON_BASE_URL;
   if (!apiKey || !apiUrl) {
-    console.error('LAYER_API_KEY and LAYER_API_URL required');
+    console.error('VERLON_API_KEY and VERLON_BASE_URL required');
     process.exit(1);
   }
 
@@ -174,8 +174,8 @@ async function api<T = unknown>(
   path: string,
   body: unknown
 ): Promise<T> {
-  const apiUrl = process.env.LAYER_API_URL!;
-  const apiKey = process.env.LAYER_API_KEY!;
+  const apiUrl = process.env.VERLON_BASE_URL!;
+  const apiKey = process.env.VERLON_API_KEY!;
   const url = new URL(path, apiUrl);
   const payload = body === null ? undefined : JSON.stringify(body);
   const isHttps = url.protocol === 'https:';

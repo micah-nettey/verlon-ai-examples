@@ -4,7 +4,7 @@
  * Idempotent: if a gate with the given name already exists for the
  * authenticated user, the script logs and skips it.
  *
- * Reads LAYER_API_KEY + LAYER_API_URL from the env file. Authenticates
+ * Reads VERLON_API_KEY + VERLON_BASE_URL from the env file. Authenticates
  * via Bearer token (the same key the agents use at runtime). Prints
  * the env-var assignments at the end so you can paste them straight
  * into .env.local.
@@ -80,10 +80,10 @@ interface ExistingGate {
 }
 
 async function main() {
-  const apiKey = process.env.LAYER_API_KEY;
-  const apiUrl = process.env.LAYER_API_URL;
+  const apiKey = process.env.VERLON_API_KEY;
+  const apiUrl = process.env.VERLON_BASE_URL;
   if (!apiKey || !apiUrl) {
-    console.error('LAYER_API_KEY and LAYER_API_URL must be set');
+    console.error('VERLON_API_KEY and VERLON_BASE_URL must be set');
     process.exit(1);
   }
 
@@ -159,8 +159,8 @@ async function api<T = unknown>(
   path: string,
   body: unknown
 ): Promise<T> {
-  const apiUrl = process.env.LAYER_API_URL!;
-  const apiKey = process.env.LAYER_API_KEY!;
+  const apiUrl = process.env.VERLON_BASE_URL!;
+  const apiKey = process.env.VERLON_API_KEY!;
   const url = new URL(path, apiUrl);
   const payload = body === null ? undefined : JSON.stringify(body);
   const isHttps = url.protocol === 'https:';

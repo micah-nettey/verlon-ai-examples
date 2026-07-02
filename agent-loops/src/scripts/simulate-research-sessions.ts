@@ -4,7 +4,7 @@
  * Mirrors simulate-sessions.ts but for the research family of gates
  * (Anthropic SDK, agent-research orchestrator + quick-answer + searcher
  * sub-gates). Drives multiple user turns through one shared sessionId
- * so Layer rolls every orchestrator + sub-gate call up under a single
+ * so Verlon rolls every orchestrator + sub-gate call up under a single
  * agent_session.
  *
  * Each turn is a self-contained question — the research agent doesn't
@@ -13,7 +13,7 @@
  * session-linked dispatch across the quick-answer / searcher sub-gates
  * within a single agent session.
  *
- * Run via Layer:
+ * Run via Verlon:
  *   pnpm simulate-research
  */
 import { randomUUID } from 'node:crypto';
@@ -104,10 +104,10 @@ async function runScenario(scenario: ResearchScenario): Promise<SessionRecord> {
 }
 
 async function main() {
-  const useLayer = process.env.USE_LAYER === 'true';
-  if (!useLayer) {
+  const useVerlon = process.env.USE_VERLON === 'true';
+  if (!useVerlon) {
     console.log(
-      '(USE_LAYER is not true — calls hit Anthropic directly, no session linking is exercised.)'
+      '(USE_VERLON is not true — calls hit Anthropic directly, no session linking is exercised.)'
     );
   }
 

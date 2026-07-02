@@ -62,8 +62,8 @@ export const SUPPORT_SCENARIOS: SupportScenario[] = [
   {
     name: 'sdk timeout on long completions',
     turns: [
-      "Our Node SDK times out on completions longer than ~30s. We're using @layer-ai/sdk 0.4.x on Railway. Is there a configurable timeout?",
-      'I tried passing `timeout: 120000` to the Layer constructor but it still cuts off. Could Railway itself be killing the connection at the proxy?',
+      "Our Node SDK times out on completions longer than ~30s. We're using @verlon-ai/sdk 0.4.x on Railway. Is there a configurable timeout?",
+      'I tried passing `timeout: 120000` to the Verlon constructor but it still cuts off. Could Railway itself be killing the connection at the proxy?',
       "Switched to streaming and it's fine end-to-end now. Last question — does streaming count differently against my rate limit, or is it the same one request = one count?",
     ],
   },
@@ -86,8 +86,8 @@ export const SUPPORT_SCENARIOS: SupportScenario[] = [
   {
     name: 'BYOK setup',
     turns: [
-      "We want to use our own Anthropic API key for one specific gate (an internal one we don't want to count against Layer-managed quota). Where do I add the key?",
-      "Found the BYOK section. Is the scope per-gate or per-project? I have three gates in this project and only one should use my key — the other two should keep using Layer's pooled keys.",
+      "We want to use our own Anthropic API key for one specific gate (an internal one we don't want to count against Verlon-managed quota). Where do I add the key?",
+      "Found the BYOK section. Is the scope per-gate or per-project? I have three gates in this project and only one should use my key — the other two should keep using Verlon's pooled keys.",
     ],
   },
   {
@@ -109,8 +109,8 @@ export const SUPPORT_SCENARIOS: SupportScenario[] = [
   {
     name: 'careers inquiry',
     turns: [
-      'Hi — love what Layer is building. Are you hiring? I noticed only a few roles on the website but I imagine the engineering team is growing.',
-      "Got it. I'll send my materials to careers@uselayer.ai. Any specific person to address it to, or is that fine?",
+      'Hi — love what Verlon is building. Are you hiring? I noticed only a few roles on the website but I imagine the engineering team is growing.',
+      "Got it. I'll send my materials to careers@verlon.ai. Any specific person to address it to, or is that fine?",
     ],
   },
   {
@@ -167,8 +167,8 @@ export const SUPPORT_SCENARIOS: SupportScenario[] = [
   {
     name: 'pivot: general → billing',
     turns: [
-      'Where can I see which third-party integrations Layer supports? Looking specifically for Slack and Datadog integrations.',
-      "Both are in the integrations page, perfect. One more thing — do you have a referral program? We're going to recommend Layer to a few partner companies and was wondering if there's a discount on either side.",
+      'Where can I see which third-party integrations Verlon supports? Looking specifically for Slack and Datadog integrations.',
+      "Both are in the integrations page, perfect. One more thing — do you have a referral program? We're going to recommend Verlon to a few partner companies and was wondering if there's a discount on either side.",
     ],
   },
   {
@@ -202,7 +202,7 @@ export const SUPPORT_SCENARIOS: SupportScenario[] = [
   {
     name: 'python sdk',
     turns: [
-      'Is there an official Python SDK, or am I supposed to use the OpenAI/Anthropic SDKs with Layer as a base URL?',
+      'Is there an official Python SDK, or am I supposed to use the OpenAI/Anthropic SDKs with Verlon as a base URL?',
     ],
   },
   {
@@ -226,7 +226,7 @@ export const SUPPORT_SCENARIOS: SupportScenario[] = [
   {
     name: 'on-prem deployment',
     turns: [
-      'Can Layer be deployed on-premise / in our own VPC for compliance reasons, or is it cloud-only?',
+      'Can Verlon be deployed on-premise / in our own VPC for compliance reasons, or is it cloud-only?',
     ],
   },
   {
