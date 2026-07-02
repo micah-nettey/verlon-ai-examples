@@ -82,7 +82,7 @@ export default function ImageGeneratorPage() {
               AI Image Generator
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Powered by Layer AI
+              Powered by Verlon AI
             </p>
           </div>
         </div>

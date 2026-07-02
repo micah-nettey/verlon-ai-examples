@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Chatbot | Layer AI Demo",
-  description: "Chat with different AI models seamlessly using Layer AI's smart routing and model normalization",
+  title: "AI Chatbot | Verlon AI Demo",
+  description: "Chat with different AI models seamlessly using Verlon AI's smart routing and model normalization",
 };
 
 export default function RootLayout({

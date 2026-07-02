@@ -1,27 +1,27 @@
-# AI Image Generator with Layer AI
+# AI Image Generator with Verlon AI
 
-An AI-powered image generation demo built with [Layer AI](https://github.com/micah-nettey/layer-ai) and Next.js. This example showcases Layer AI's **automatic task type inference** feature - no need to specify the request type!
+An AI-powered image generation demo built with [Verlon AI](https://verlon.ai) and Next.js. This example showcases Verlon AI's **automatic task type inference** feature - no need to specify the request type!
 
-![Layer AI Image Generator](https://img.shields.io/badge/Layer%20AI-Image%20Generator-blue)
+![Verlon AI Image Generator](https://img.shields.io/badge/Verlon%20AI-Image%20Generator-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
 ## Features
 
-- 🎨 **AI Image Generation** - Create images from text prompts using DALL-E and other models
-- 🔄 **Automatic Type Inference** - No need to specify `type: 'image'` - Layer AI infers it from your gate's `taskType`
+- 🎨 **AI Image Generation** - Create images from text prompts using GPT Image, Gemini, and other models
+- 🔄 **Automatic Type Inference** - No need to specify `type: 'image'` - Verlon AI infers it from your gate's `taskType`
 - 🚀 **Smart Routing** - Automatic model selection and fallback handling
 - 💰 **Cost Tracking** - See the exact cost of each image generation
 - ⚡ **Fast Performance** - Built with Next.js 16 and modern React
-- 📊 **Usage Tracking** - All requests automatically tracked in your Layer AI dashboard
+- 📊 **Usage Tracking** - All requests automatically tracked in your Verlon AI dashboard
 
 ## What This Demo Showcases
 
-This example demonstrates Layer AI's **type-safe methods with compile-time validation**:
+This example demonstrates Verlon AI's **type-safe methods with compile-time validation**:
 
-### Old Way (SDK < 2.5.0)
+### Legacy Way (`complete()`)
 ```typescript
-const result = await layer.complete({
+const result = await verlon.complete({
   gateId: 'your-gate-id',
   type: 'image', // ❌ Required - repetitive and error-prone
   data: {
@@ -30,9 +30,9 @@ const result = await layer.complete({
 });
 ```
 
-### New Way (SDK >= 2.5.0)
+### Type-Safe Way (`image()`)
 ```typescript
-const result = await layer.image({
+const result = await verlon.image({
   gateId: 'your-gate-id',
   data: {
     prompt: 'A sunset over mountains',
@@ -49,8 +49,8 @@ const result = await layer.image({
 ## Prerequisites
 
 - Node.js 18+ and pnpm
-- A Layer AI account ([Sign up](https://uselayer.ai))
-- Layer AI API key
+- A Verlon AI account ([Sign up](https://verlon.ai))
+- Verlon AI API key
 
 ## Setup
 
@@ -64,30 +64,31 @@ cd image-generator
 pnpm install
 ```
 
-### 2. Configure Environment Variables
+### 2. Create an Image Generation Gate
+
+Create a gate in your Verlon AI dashboard:
+
+1. Go to the [Verlon AI Dashboard](https://verlon.ai/dashboard)
+2. Create a new gate with:
+   - **Name**: `image-generator` (or your custom name)
+   - **Task Type**: `image` ⭐ **This is key - Verlon AI will automatically use this!**
+   - **Primary Model**: Choose an image model (e.g., `gpt-image-1`)
+   - **Fallback Models**: Add fallback image models for reliability
+3. Copy the gate ID — you'll need it in the next step.
+
+> **Important**: Setting the gate's `taskType` to `image` tells Verlon AI that all requests to this gate are for image generation. You don't need to specify `type: 'image'` in your code!
+
+### 3. Configure Environment Variables
 
 Create a `.env.local` file in the image-generator directory:
 
 ```bash
-# Layer AI Configuration
-LAYER_API_KEY=your_api_key_here
-LAYER_API_URL=https://api.uselayer.ai
+# Verlon AI Configuration
+VERLON_API_KEY=your_api_key_here
+VERLON_GATE_ID=your_gate_id_here
 ```
 
-Get your API key from the [Layer AI Dashboard](https://uselayer.ai/dashboard).
-
-### 3. Create an Image Generation Gate
-
-Create a gate in your Layer AI dashboard:
-
-1. Go to [Layer AI Dashboard](https://uselayer.ai/dashboard)
-2. Create a new gate with:
-   - **Name**: `image-generator` (or your custom name)
-   - **Task Type**: `image` ⭐ **This is key - Layer AI will automatically use this!**
-   - **Primary Model**: Choose an image model (e.g., `dall-e-3`)
-   - **Fallback Models**: Add fallback image models for reliability
-
-> **Important**: Setting the gate's `taskType` to `image` tells Layer AI that all requests to this gate are for image generation. You don't need to specify `type: 'image'` in your code!
+Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai`.
 
 ### 4. Run the Development Server
 
@@ -109,7 +110,7 @@ image-generator/
 │   ├── page.tsx              # Main image generator interface
 │   └── globals.css           # Global styles
 ├── lib/
-│   └── layer.ts              # Layer AI SDK initialization
+│   └── verlon.ts             # Verlon AI SDK initialization
 ├── .env.local                # Environment variables (create this)
 ├── package.json
 └── README.md
@@ -125,22 +126,22 @@ The user types an image description in the text area.
 
 ```typescript
 // app/api/generate/route.ts
-const result = await layer.image({
-  gateId: process.env.LAYER_GATE_ID,
+const result = await verlon.image({
+  gateId: process.env.VERLON_GATE_ID,
   data: {
     prompt: userPrompt,
   },
 });
 ```
 
-Notice we're using the **type-safe `layer.image()`** method! This provides:
+Notice we're using the **type-safe `verlon.image()`** method! This provides:
 - Compile-time type checking for image-specific parameters
 - IDE autocomplete for all valid options
 - Better error messages if you pass invalid data
 
-### 3. Layer AI Handles Everything
+### 3. Verlon AI Handles Everything
 
-Layer AI:
+Verlon AI:
 - Uses the gate's `taskType` to determine this is an image request
 - Routes to your configured image generation model
 - Handles retries and fallbacks automatically
@@ -159,13 +160,13 @@ The UI displays:
 
 ### Image Generation API Route (`app/api/generate/route.ts`)
 
-Handles image generation using the Layer AI SDK:
+Handles image generation using the Verlon AI SDK:
 
 ```typescript
-import { layer } from '@/lib/layer';
+import { verlon } from '@/lib/verlon';
 
-const result = await layer.image({
-  gateId: process.env.LAYER_GATE_ID,
+const result = await verlon.image({
+  gateId: process.env.VERLON_GATE_ID,
   data: {
     prompt: userPrompt,
     size: '1024x1024',
@@ -180,16 +181,16 @@ return NextResponse.json({
 });
 ```
 
-### Layer SDK Initialization (`lib/layer.ts`)
+### Verlon SDK Initialization (`lib/verlon.ts`)
 
-Configures the Layer AI client:
+Configures the Verlon AI client:
 
 ```typescript
-import { Layer } from '@layer-ai/sdk';
+import { Verlon } from '@verlon-ai/sdk';
 
-export const layer = new Layer({
-  apiKey: process.env.LAYER_API_KEY,
-  baseUrl: process.env.LAYER_API_URL,
+export const verlon = new Verlon({
+  apiKey: process.env.VERLON_API_KEY,
+  baseUrl: process.env.VERLON_BASE_URL,
 });
 ```
 
@@ -204,13 +205,13 @@ React component with prompt input, loading states, and image display.
 Update the gate ID in your environment variables:
 
 ```bash
-LAYER_GATE_ID=your-custom-gate-id
+VERLON_GATE_ID=your-custom-gate-id
 ```
 
 Or pass it directly in the code:
 
 ```typescript
-const result = await layer.image({
+const result = await verlon.image({
   gateId: 'your-custom-gate-id',
   data: { prompt },
 });
@@ -221,13 +222,13 @@ const result = await layer.image({
 Add custom parameters to the request:
 
 ```typescript
-const result = await layer.image({
-  gateId: process.env.LAYER_GATE_ID,
+const result = await verlon.image({
+  gateId: process.env.VERLON_GATE_ID,
   data: {
     prompt: userPrompt,
     size: '1792x1024',      // Different size
     quality: 'hd',          // Higher quality
-    style: 'vivid',         // DALL-E 3 style
+    style: 'vivid',         // vivid or natural style
   },
 });
 ```
@@ -258,19 +259,19 @@ Add your environment variables in the Vercel dashboard.
 
 ## Troubleshooting
 
-### "LAYER_API_KEY environment variable is required"
+### "VERLON_API_KEY environment variable is required"
 
 Make sure you created `.env.local` with your API key:
 
 ```bash
-LAYER_API_KEY=layer_xxx
-LAYER_API_URL=https://api.uselayer.ai
+VERLON_API_KEY=sk-vrln-xxx
+VERLON_GATE_ID=your_gate_id_here
 ```
 
 ### "Gate not found" or 404 errors
 
 Ensure:
-1. You created a gate in your Layer AI dashboard
+1. You created a gate in your Verlon AI dashboard
 2. The gate's `taskType` is set to `image`
 3. Your gate ID is correct in the environment variables
 
@@ -280,8 +281,8 @@ Run `pnpm install` to ensure all dependencies are installed correctly.
 
 ## Learn More
 
-- [Layer AI Documentation](https://github.com/micah-nettey/layer-ai)
-- [Layer AI SDK](https://www.npmjs.com/package/@layer-ai/sdk)
+- [Verlon AI Documentation](https://docs.verlon.ai)
+- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
 - [Next.js Documentation](https://nextjs.org/docs)
 
 ## License

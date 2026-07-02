@@ -15,21 +15,21 @@ interface ContentOption {
 const contentOptions: ContentOption[] = [
   {
     id: 'blog-outline',
-    gateId: '70de443d-41e5-451b-a555-4a7fd7912fc7',
+    gateId: process.env.NEXT_PUBLIC_VERLON_GATE_ID_BLOG ?? '',
     title: 'Blog Outline',
     description: 'Generate structured outlines for blog posts',
     placeholder: 'Enter your blog topic (e.g., "The future of AI in healthcare")',
   },
   {
     id: 'social-caption',
-    gateId: 'ff9c7959-70da-47be-8a65-a36f1acfcffc',
+    gateId: process.env.NEXT_PUBLIC_VERLON_GATE_ID_SOCIAL ?? '',
     title: 'Social Media Caption',
     description: 'Create engaging social media captions',
     placeholder: 'Describe the post content (e.g., "New product launch announcement")',
   },
   {
     id: 'product-description',
-    gateId: '626248c5-e7a3-4d85-8536-6fee982a9e05',
+    gateId: process.env.NEXT_PUBLIC_VERLON_GATE_ID_PRODUCT ?? '',
     title: 'Product Description',
     description: 'Write compelling product descriptions',
     placeholder: 'Describe your product (e.g., "Wireless noise-cancelling headphones")',
@@ -92,12 +92,12 @@ export default function Home() {
           <p className="text-lg text-zinc-600 dark:text-zinc-400">
             Powered by{' '}
             <a
-              href="https://uselayer.ai"
+              href="https://verlon.ai"
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-zinc-900 hover:underline dark:text-zinc-50"
             >
-              Layer AI
+              Verlon AI
             </a>
             's smart routing
           </p>
@@ -187,7 +187,7 @@ export default function Home() {
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-zinc-500 dark:text-zinc-500">
           <p>
-            This demo showcases Layer AI's ability to intelligently route requests to the
+            This demo showcases Verlon AI's ability to intelligently route requests to the
             best AI model based on your task requirements.
           </p>
         </div>

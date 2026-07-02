@@ -1,8 +1,8 @@
-# Recipe Generator with Layer AI
+# Recipe Generator with Verlon AI
 
-A backend API that generates recipes from grocery lists using Layer AI. This Express.js example demonstrates vendor-agnostic AI integration, model switching without code changes, and Firebase Functions compatibility.
+A backend API that generates recipes from grocery lists using Verlon AI. This Express.js example demonstrates vendor-agnostic AI integration, model switching without code changes, and Firebase Functions compatibility.
 
-![Layer AI](https://img.shields.io/badge/Layer%20AI-Recipe%20Generator-blue)
+![Verlon AI](https://img.shields.io/badge/Verlon%20AI-Recipe%20Generator-blue)
 ![Express.js](https://img.shields.io/badge/Express.js-5.1-green)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
@@ -17,19 +17,19 @@ A backend API that generates recipes from grocery lists using Layer AI. This Exp
 
 ## What This Demo Showcases
 
-This recipe generator demonstrates Layer AI's core value propositions:
+This recipe generator demonstrates Verlon AI's core value propositions:
 
 1. **Vendor Lock-in Solution**: Switch AI providers instantly via dashboard - no code changes or redeployments
 2. **Model Experimentation**: Test GPT-4, Claude, Gemini side-by-side to find the best fit
 3. **Cost Optimization**: Track costs per request and switch to cheaper models when needed
-4. **Automatic Fallbacks**: If primary model fails, Layer AI routes to fallback models
-5. **Usage Analytics**: All requests tracked in Layer AI dashboard with cost and performance metrics
+4. **Automatic Fallbacks**: If primary model fails, Verlon AI routes to fallback models
+5. **Usage Analytics**: All requests tracked in Verlon AI dashboard with cost and performance metrics
 
 ## Prerequisites
 
 - Node.js 18+ and pnpm
-- A Layer AI account ([Sign up](https://uselayer.ai))
-- Layer AI API key
+- A Verlon AI account ([Sign up](https://verlon.ai))
+- Verlon AI API key
 
 ## Setup
 
@@ -43,33 +43,32 @@ cd recipe-generator
 pnpm install
 ```
 
-### 2. Configure Environment Variables
+### 2. Create a Gate
+
+Create a gate in your Verlon AI dashboard:
+
+1. Go to the [Verlon AI Dashboard](https://verlon.ai/dashboard)
+2. Create a new gate with:
+   - **Name**: `recipe-generation` (or your custom name)
+   - **Type**: Chat
+   - **Primary Model**: Choose your preferred model (e.g., `gpt-4o`, `claude-sonnet-4-5-20250929`, `gemini-2.0-flash`)
+   - **Fallback Models**: Add fallback models for reliability
+3. Copy the gate ID — you'll need it in the next step.
+
+### 3. Configure Environment Variables
 
 Update the `.env.local` file in the recipe-generator directory:
 
 ```bash
-# Layer AI Configuration
-LAYER_API_KEY=your_api_key_here
-LAYER_API_URL=https://api.uselayer.ai
+# Verlon AI Configuration
+VERLON_API_KEY=your_api_key_here
+VERLON_GATE_ID=your_gate_id_here
 
 # Server Configuration (optional)
 PORT=3000
 ```
 
-Get your API key from the [Layer AI Dashboard](https://uselayer.ai/dashboard).
-
-### 3. Create a Gate
-
-Create a gate in your Layer AI dashboard:
-
-1. Go to [Layer AI Dashboard](https://uselayer.ai/dashboard)
-2. Create a new gate with:
-   - **Name**: `recipe-generation`
-   - **Type**: Chat
-   - **Primary Model**: Choose your preferred model (e.g., `gpt-4o`, `claude-sonnet-4-5-20250929`, `gemini-2.0-flash`)
-   - **Fallback Models**: Add fallback models for reliability
-
-> **Note**: The gate name must be `recipe-generation` to match the code, or update the gate name in [src/index.ts:36](src/index.ts#L36).
+Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai`.
 
 ### 4. Run the Development Server
 
@@ -84,9 +83,9 @@ The API will be running at [http://localhost:3000](http://localhost:3000).
 ```
 recipe-generator/
 ├── src/
-│   └── index.ts              # Express server with Layer AI integration
-├── lib/
-│   └── layer.ts              # Layer AI SDK initialization
+│   ├── index.ts              # Express server with Verlon AI integration
+│   └── lib/
+│       └── verlon.ts         # Verlon AI SDK initialization
 ├── .env.local                # Environment variables
 ├── package.json
 ├── tsconfig.json
@@ -147,8 +146,8 @@ fetch('http://localhost:3000/recipe', {
 
 ```typescript
 // src/index.ts
-const result = await layer.chat({
-  gateId: 'recipe-generation',
+const result = await verlon.chat({
+  gateId: process.env.VERLON_GATE_ID,
   data: {
     messages: [
       {
@@ -164,9 +163,9 @@ const result = await layer.chat({
 });
 ```
 
-### 3. Layer AI Handles Routing
+### 3. Verlon AI Handles Routing
 
-Layer AI:
+Verlon AI:
 - Routes the request to your configured primary model
 - Automatically handles retries and fallbacks if needed
 - Tracks cost and usage
@@ -186,7 +185,7 @@ This Express.js code adapts to Firebase Functions with minimal changes:
 // src/index.ts
 app.post('/recipe', async (req: Request, res: Response) => {
   const { groceryList } = req.body;
-  const result = await layer.chat({ gateId: 'recipe-generation', data: { messages } });
+  const result = await verlon.chat({ gateId: process.env.VERLON_GATE_ID, data: { messages } });
   res.json({ recipe: result.content, metadata: { ... } });
 });
 ```
@@ -196,11 +195,11 @@ app.post('/recipe', async (req: Request, res: Response) => {
 ```typescript
 // functions/src/index.ts
 import { onRequest } from 'firebase-functions/v2/https';
-import { layer } from './lib/layer';
+import { verlon } from './lib/verlon';
 
 export const generateRecipe = onRequest(async (req, res) => {
   const { groceryList } = req.body;
-  const result = await layer.chat({ gateId: 'recipe-generation', data: { messages } });
+  const result = await verlon.chat({ gateId: process.env.VERLON_GATE_ID, data: { messages } });
   res.json({ recipe: result.content, metadata: { ... } });
 });
 ```
@@ -208,23 +207,23 @@ export const generateRecipe = onRequest(async (req, res) => {
 **Key differences:**
 - Import `onRequest` from Firebase Functions v2
 - Wrap handler with `onRequest()` instead of `app.post()`
-- Keep the exact same Layer AI integration code (no changes!)
+- Keep the exact same Verlon AI integration code (no changes!)
 
-The `layer` client initialization in `lib/layer.ts` stays identical.
+The `verlon` client initialization in `lib/verlon.ts` stays identical.
 
 ## Demo Script for Client Presentation
 
 ### Setup (Before Demo)
 
 1. ✅ Start the API: `pnpm dev`
-2. ✅ Open Layer AI Dashboard: Show gates page
+2. ✅ Open Verlon AI Dashboard: Show gates page
 3. ✅ Prepare curl command or Postman/Insomnia request
 4. ✅ Have 2-3 ingredient lists ready (simple → complex)
 
 ### Demo Flow (15-30 minutes)
 
 **1. Introduction (2 min)**
-- "Today I'm showing you Layer AI - it solves vendor lock-in for AI models"
+- "Today I'm showing you Verlon AI - it solves vendor lock-in for AI models"
 - "We'll build a recipe generator, but this applies to any AI use case"
 
 **2. Show the Problem (3 min)**
@@ -241,7 +240,7 @@ The `layer` client initialization in `lib/layer.ts` stays identical.
 - Highlight: "GPT-4 took 1.8s and cost $0.002"
 
 **4. Switch Models Live (5 min)**
-- Open Layer AI Dashboard
+- Open Verlon AI Dashboard
 - Switch gate to Claude Sonnet
 - Send SAME request again (no code changes!)
 - Show response: different recipe, different model, different cost
@@ -261,11 +260,11 @@ The `layer` client initialization in `lib/layer.ts` stays identical.
 
 **7. Firebase Adaptation (3 min)**
 - Show the 3-line diff in README
-- "The Layer AI code stays identical - just change the wrapper"
+- "The Verlon AI code stays identical - just change the wrapper"
 - "Works with Express, Firebase, AWS Lambda, any Node.js environment"
 
 **8. Pricing Discussion (2 min)**
-- "You pay Layer AI $29-99/month + actual model costs"
+- "You pay Verlon AI $29-99/month + actual model costs"
 - "But you save:"
   - Engineering time (no SDK switching code)
   - Testing time (no redeployment risk)
@@ -273,7 +272,7 @@ The `layer` client initialization in `lib/layer.ts` stays identical.
 
 **9. Q&A (5+ min)**
 - Common questions:
-  - "What if Layer AI goes down?" → Direct API fallback option
+  - "What if Verlon AI goes down?" → Direct API fallback option
   - "Can we self-host?" → Not currently, but data never stored
   - "What models are supported?" → OpenAI, Anthropic, Google, Mistral, more coming
   - "Does this work with streaming?" → Yes (not shown in this demo)
@@ -302,7 +301,7 @@ The `layer` client initialization in `lib/layer.ts` stays identical.
 Update the gate name in [src/index.ts:36](src/index.ts#L36):
 
 ```typescript
-const result = await layer.chat({
+const result = await verlon.chat({
   gateId: 'your-gate-name', // Change this
   data: { messages },
 });
@@ -361,18 +360,18 @@ Use [Serverless Framework](https://www.serverless.com/) or AWS CDK to deploy as 
 
 ## Troubleshooting
 
-### "LAYER_API_KEY environment variable is required"
+### "VERLON_API_KEY environment variable is required"
 
 Make sure you created `.env.local` with your API key:
 
 ```bash
-LAYER_API_KEY=layer_xxx
-LAYER_API_URL=https://api.uselayer.ai
+VERLON_API_KEY=sk-vrln-xxx
+VERLON_BASE_URL=https://api.verlon.ai
 ```
 
 ### "Gate not found" or 404 errors
 
-Ensure you created a gate named `recipe-generation` in your Layer AI dashboard, or update the gate name in the code.
+Ensure you created a gate named `recipe-generation` in your Verlon AI dashboard, or update the gate name in the code.
 
 ### TypeScript errors
 
@@ -388,8 +387,8 @@ PORT=3001
 
 ## Learn More
 
-- [Layer AI Documentation](https://github.com/micah-nettey/layer-ai)
-- [Layer AI SDK](https://www.npmjs.com/package/@layer-ai/sdk)
+- [Verlon AI Documentation](https://docs.verlon.ai)
+- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
 - [Express.js Documentation](https://expressjs.com/)
 - [Firebase Functions Documentation](https://firebase.google.com/docs/functions)
 
