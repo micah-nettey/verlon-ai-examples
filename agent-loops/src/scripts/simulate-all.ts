@@ -4,7 +4,7 @@
  * (Tracer / Cortex / Nexus / Einstein need a meaningful number of
  * sessions per gate before their analyses fire).
  *
- * Run via Layer:
+ * Run via Verlon:
  *   pnpm simulate-all
  *
  * Sequential by design — running them in parallel would let the rate

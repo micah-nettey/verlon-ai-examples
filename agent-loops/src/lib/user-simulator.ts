@@ -7,9 +7,9 @@
  * plausible next user turn, optionally signal that the conversation
  * is naturally complete.
  *
- * Calls go to the OpenAI API directly (NOT through Layer) — this is a
+ * Calls go to the OpenAI API directly (NOT through Verlon) — this is a
  * simulation utility, not an agent under test, and routing it through
- * Layer would pollute the test-gate analytics with simulator chatter.
+ * Verlon would pollute the test-gate analytics with simulator chatter.
  */
 
 import OpenAI from 'openai';
@@ -23,7 +23,7 @@ function client(): OpenAI {
   const key = process.env.OPENAI_API_KEY;
   if (!key) {
     throw new Error(
-      'OPENAI_API_KEY is required for user-simulator (calls bypass Layer).'
+      'OPENAI_API_KEY is required for user-simulator (calls bypass Verlon).'
     );
   }
   _client = new OpenAI({ apiKey: key });

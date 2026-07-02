@@ -3,7 +3,7 @@
  *
  * Exercises:
  *   - Multiple sessions with distinct sessionId values
- *   - Multiple turns per session with the SAME sessionId (Layer should
+ *   - Multiple turns per session with the SAME sessionId (Verlon should
  *     roll all turn requests up under one agent_session)
  *   - Per-turn classifier routing — a single session can pivot from
  *     billing → technical → general, each turn hitting a different
@@ -11,12 +11,12 @@
  *   - Conversation history threaded through every specialist call so
  *     the model can reference prior turns
  *
- * Run via Layer (USE_LAYER=true in .env.local):
+ * Run via Verlon (USE_VERLON=true in .env.local):
  *   pnpm simulate
  */
 import { randomUUID } from 'node:crypto';
 import type OpenAI from 'openai';
-import { buildOpenAIClient, layerHeaders } from '../lib/openai-client.js';
+import { buildOpenAIClient, verlonHeaders } from '../lib/openai-client.js';
 import { generateNextUserTurn } from '../lib/user-simulator.js';
 import {
   SUPPORT_SCENARIOS,
@@ -135,7 +135,7 @@ async function runOneTurn(
       tool_choice: { type: 'function', function: { name: 'route_ticket' } },
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: 'AGENT_SUPPORT_GATE_ID',
         sessionId,
       }),
@@ -165,7 +165,7 @@ async function runOneTurn(
       ],
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: SPECIALIST_GATE_ENV[decision.specialist],
         sessionId,
       }),
@@ -246,10 +246,10 @@ async function runScenario(
 
 async function main() {
   const client = buildOpenAIClient();
-  const useLayer = process.env.USE_LAYER === 'true';
-  if (!useLayer) {
+  const useVerlon = process.env.USE_VERLON === 'true';
+  if (!useVerlon) {
     console.log(
-      '(USE_LAYER is not true — calls will hit OpenAI directly and the session-linking story will not be exercised.)'
+      '(USE_VERLON is not true — calls will hit OpenAI directly and the session-linking story will not be exercised.)'
     );
   }
 

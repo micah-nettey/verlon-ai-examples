@@ -9,17 +9,17 @@
  *
  * Different shape from research / customer-support: no orchestrator,
  * no tool loop, no specialists. Just one structured-output call. This
- * is the simplest possible Layer adoption — a single gate that wraps
+ * is the simplest possible Verlon adoption — a single gate that wraps
  * one model call.
  *
  * Run direct:
  *   pnpm extract "passage to extract from..."
  *
- * Run via Layer:
- *   USE_LAYER=true pnpm extract "..."
+ * Run via Verlon:
+ *   USE_VERLON=true pnpm extract "..."
  */
 import { randomUUID } from 'node:crypto';
-import { buildOpenAIClient, layerHeaders } from '../lib/openai-client.js';
+import { buildOpenAIClient, verlonHeaders } from '../lib/openai-client.js';
 
 const EXTRACTOR_MODEL = 'gpt-4o-mini';
 const MAX_TOKENS = 1024;
@@ -85,9 +85,9 @@ export async function extractOne(passage: string): Promise<{
 }> {
   const client = buildOpenAIClient();
   const sessionId = randomUUID();
-  const useLayer = process.env.USE_LAYER === 'true';
+  const useVerlon = process.env.USE_VERLON === 'true';
   console.log(
-    `\n=== extractor session ${sessionId.slice(0, 8)} ${useLayer ? '(via Layer)' : '(direct OpenAI)'} ===`
+    `\n=== extractor session ${sessionId.slice(0, 8)} ${useVerlon ? '(via Verlon)' : '(direct OpenAI)'} ===`
   );
 
   const res = await client.chat.completions.create(
@@ -112,7 +112,7 @@ export async function extractOne(passage: string): Promise<{
       },
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: 'EXTRACTOR_GATE_ID',
         sessionId,
       }),

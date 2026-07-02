@@ -43,17 +43,17 @@ export const EXTRACTOR_PASSAGES: ExtractorPassage[] = [
   {
     name: 'termination notice',
     passage:
-      "Hi — please consider this our 30-day notice of non-renewal. Our contract ends Feb 28 2027 and we won't be continuing. The decision wasn't about Layer's product but rather a budget reorg internally. Sarah Ng, sarah.ng@helio.health, billing contact for Helio Health. Final invoice should be $0 since we're paid through the term.",
+      "Hi — please consider this our 30-day notice of non-renewal. Our contract ends Feb 28 2027 and we won't be continuing. The decision wasn't about Verlon's product but rather a budget reorg internally. Sarah Ng, sarah.ng@helio.health, billing contact for Helio Health. Final invoice should be $0 since we're paid through the term.",
   },
   {
     name: 'expansion request',
     passage:
-      "Hi! We're loving Layer and want to expand from our current 3 seats to 12 seats starting Nov 1 2026. Per the pricing page that should be $1,188/mo total. Can you pro-rate the change for the current cycle? — Rohan Mehta, head of platform at Tessa Robotics. rohan@tessarobotics.ai.",
+      "Hi! We're loving Verlon and want to expand from our current 3 seats to 12 seats starting Nov 1 2026. Per the pricing page that should be $1,188/mo total. Can you pro-rate the change for the current cycle? — Rohan Mehta, head of platform at Tessa Robotics. rohan@tessarobotics.ai.",
   },
   {
     name: 'unpaid invoice reminder',
     passage:
-      "Hi Lin — this is a friendly reminder that invoice #INV-2026-0817 for $3,420 USD was due on Oct 30 and is now 9 days overdue. If there's an issue with the invoice please let us know, otherwise please remit at your earliest convenience. — accounts@uselayer.ai.",
+      "Hi Lin — this is a friendly reminder that invoice #INV-2026-0817 for $3,420 USD was due on Oct 30 and is now 9 days overdue. If there's an issue with the invoice please let us know, otherwise please remit at your earliest convenience. — accounts@verlon.ai.",
   },
 
   // ─── Meeting notes (7) ────────────────────────────────────────────
@@ -65,7 +65,7 @@ export const EXTRACTOR_PASSAGES: ExtractorPassage[] = [
   {
     name: 'product planning',
     passage:
-      "Product planning, Tuesday morning. Decisions: (1) Streaming GA pushed to Dec — needs more soak time. (2) The BYOK admin UI scope is reduced to per-gate only; per-project deferred. (3) Q1 theme is 'cost observability' — Aria will draft a more detailed plan by Nov 20. Attendees: Aria, Devon, Priya, Marcus (PM). Marcus to send notes to leadership@uselayer.ai.",
+      "Product planning, Tuesday morning. Decisions: (1) Streaming GA pushed to Dec — needs more soak time. (2) The BYOK admin UI scope is reduced to per-gate only; per-project deferred. (3) Q1 theme is 'cost observability' — Aria will draft a more detailed plan by Nov 20. Attendees: Aria, Devon, Priya, Marcus (PM). Marcus to send notes to leadership@verlon.ai.",
   },
   {
     name: 'customer interview',
@@ -107,29 +107,29 @@ export const EXTRACTOR_PASSAGES: ExtractorPassage[] = [
   {
     name: 'sow snippet',
     passage:
-      "Statement of Work between Layer AI Inc. and Tessa Robotics, dated Sep 12 2026. Scope: integration of Layer SDK into Tessa's robotics control plane, including custom routing rules and 24/7 on-call support. Engagement runs Oct 1 2026 through Mar 31 2027. Total fees: $84,000 paid in three installments of $28,000 each (Oct 1, Jan 1, Apr 1).",
+      "Statement of Work between Verlon AI Inc. and Tessa Robotics, dated Sep 12 2026. Scope: integration of Verlon SDK into Tessa's robotics control plane, including custom routing rules and 24/7 on-call support. Engagement runs Oct 1 2026 through Mar 31 2027. Total fees: $84,000 paid in three installments of $28,000 each (Oct 1, Jan 1, Apr 1).",
   },
   {
     name: 'mutual nda',
     passage:
-      'This Mutual Non-Disclosure Agreement is entered into between Layer AI, Inc. and Northwind Solutions LLC ("Northwind") effective Oct 22 2026. The obligations of each Party with respect to Confidential Information shall survive for a period of three (3) years following the date of disclosure. Notices to Northwind: olivia.reyes@northwind.io.',
+      'This Mutual Non-Disclosure Agreement is entered into between Verlon AI, Inc. and Northwind Solutions LLC ("Northwind") effective Oct 22 2026. The obligations of each Party with respect to Confidential Information shall survive for a period of three (3) years following the date of disclosure. Notices to Northwind: olivia.reyes@northwind.io.',
   },
   {
     name: 'msa snippet',
     passage:
-      "12. Limitation of Liability. EXCEPT FOR EITHER PARTY'S BREACH OF CONFIDENTIALITY OBLIGATIONS, IN NO EVENT SHALL EITHER PARTY'S AGGREGATE LIABILITY EXCEED THE GREATER OF (A) THE FEES PAID BY CUSTOMER TO LAYER IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO LIABILITY, OR (B) USD 50,000.",
+      "12. Limitation of Liability. EXCEPT FOR EITHER PARTY'S BREACH OF CONFIDENTIALITY OBLIGATIONS, IN NO EVENT SHALL EITHER PARTY'S AGGREGATE LIABILITY EXCEED THE GREATER OF (A) THE FEES PAID BY CUSTOMER TO VERLON IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO LIABILITY, OR (B) USD 50,000.",
   },
   {
     name: 'renewal addendum',
     passage:
-      "Renewal Addendum #2 to the Master Services Agreement dated Mar 5 2025 between Layer AI Inc. and Acme Corp. Effective Jan 1 2027 the Annual Subscription Fee is increased from $42,000 to $48,000 reflecting the upgrade from Growth to Scale tier. All other terms of the underlying MSA remain in full force. Signed by Jane Cooper (CFO, Acme Corp) and Layer AI on Nov 7 2026.",
+      "Renewal Addendum #2 to the Master Services Agreement dated Mar 5 2025 between Verlon AI Inc. and Acme Corp. Effective Jan 1 2027 the Annual Subscription Fee is increased from $42,000 to $48,000 reflecting the upgrade from Growth to Scale tier. All other terms of the underlying MSA remain in full force. Signed by Jane Cooper (CFO, Acme Corp) and Verlon AI on Nov 7 2026.",
   },
 
   // ─── Inbound support (5) ──────────────────────────────────────────
   {
     name: 'bug report',
     passage:
-      "Hi support — we're seeing intermittent 502 responses from /v3/chat over the past two days, maybe 1 in 50 requests. Reproducible with a small Node test that fires 100 sequential requests. Layer SDK 0.4.7, deployed on Fly.io in IAD region. Let me know if you need request IDs — I can pull the last 10. — kevin@frame.io.",
+      "Hi support — we're seeing intermittent 502 responses from /v3/chat over the past two days, maybe 1 in 50 requests. Reproducible with a small Node test that fires 100 sequential requests. Verlon SDK 0.4.7, deployed on Fly.io in IAD region. Let me know if you need request IDs — I can pull the last 10. — kevin@frame.io.",
   },
   {
     name: 'feature request',
@@ -144,7 +144,7 @@ export const EXTRACTOR_PASSAGES: ExtractorPassage[] = [
   {
     name: 'tech question short',
     passage:
-      'Quick one: does the Layer Python SDK support the streaming API yet, or only the Node SDK? Building a Streamlit app and the Python ergonomics matter for us. Thanks — daniel@arcata.studio.',
+      'Quick one: does the Verlon Python SDK support the streaming API yet, or only the Node SDK? Building a Streamlit app and the Python ergonomics matter for us. Thanks — daniel@arcata.studio.',
   },
   {
     name: 'access issue',
@@ -171,7 +171,7 @@ export const EXTRACTOR_PASSAGES: ExtractorPassage[] = [
   {
     name: 'hire announcement',
     passage:
-      "Layer AI today announced the hire of Dr. Lila Ortega as its first Chief Scientist. Dr. Ortega joins from Google DeepMind where she led the alignment research group for the past four years. She begins at Layer on January 5 2027 and will be based in the company's San Francisco office.",
+      "Verlon AI today announced the hire of Dr. Lila Ortega as its first Chief Scientist. Dr. Ortega joins from Google DeepMind where she led the alignment research group for the past four years. She begins at Verlon on January 5 2027 and will be based in the company's San Francisco office.",
   },
   {
     name: 'award announcement',

@@ -3,7 +3,7 @@
  * the research agent's "orchestrator + specialists" shape, but uses
  * OpenAI's Chat Completions API instead of Anthropic Messages.
  *
- * Four call sites (each becomes a Layer "gate"):
+ * Four call sites (each becomes a Verlon "gate"):
  *   1. AGENT_SUPPORT    — the agent gate itself doubles as the
  *                         classifier/router (cheap model + a single
  *                         function-call to pick a specialist).
@@ -14,12 +14,12 @@
  * Run direct against OpenAI:
  *   pnpm support "I was charged twice for last month's invoice"
  *
- * Run through Layer (after gates exist + IDs are in .env.local):
- *   USE_LAYER=true pnpm support "..."
+ * Run through Verlon (after gates exist + IDs are in .env.local):
+ *   USE_VERLON=true pnpm support "..."
  */
 import { randomUUID } from 'node:crypto';
 import type OpenAI from 'openai';
-import { buildOpenAIClient, layerHeaders } from '../lib/openai-client.js';
+import { buildOpenAIClient, verlonHeaders } from '../lib/openai-client.js';
 
 const CLASSIFIER_MODEL = 'gpt-4o-mini';
 const SPECIALIST_MODEL = 'gpt-4o';
@@ -81,7 +81,7 @@ async function runClassifier(
       tool_choice: { type: 'function', function: { name: 'route_ticket' } },
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: 'AGENT_SUPPORT_GATE_ID',
         sessionId,
       }),
@@ -130,7 +130,7 @@ async function runSpecialist(
       ],
     },
     {
-      headers: layerHeaders({
+      headers: verlonHeaders({
         gateIdEnvVar: SPECIALIST_GATE_ENV[specialist],
         sessionId,
       }),
@@ -152,9 +152,9 @@ interface SessionResult {
 export async function answerOne(ticket: string): Promise<SessionResult> {
   const client = buildOpenAIClient();
   const sessionId = randomUUID();
-  const useLayer = process.env.USE_LAYER === 'true';
+  const useVerlon = process.env.USE_VERLON === 'true';
   console.log(
-    `\n=== support session ${sessionId.slice(0, 8)} ${useLayer ? '(via Layer)' : '(direct OpenAI)'} ===`
+    `\n=== support session ${sessionId.slice(0, 8)} ${useVerlon ? '(via Verlon)' : '(direct OpenAI)'} ===`
   );
   console.log(`Ticket: ${ticket}`);
 
