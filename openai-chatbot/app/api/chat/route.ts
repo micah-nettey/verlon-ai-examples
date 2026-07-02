@@ -6,8 +6,8 @@ export async function POST(req: Request) {
 
     const startTime = Date.now();
 
-    // @ts-ignore - gateId is a Layer AI extension to OpenAI API
-    // Note: We don't specify a model here - Layer AI uses the model configured in the gate
+    // @ts-ignore - gateId is a Verlon AI extension to OpenAI API
+    // Note: We don't specify a model here - Verlon AI uses the model configured in the gate
     // This demonstrates that you can use ANY model (GPT, Claude, Gemini, Mistral) just by changing the gate config
     const stream = await openai.chat.completions.create({
       messages,

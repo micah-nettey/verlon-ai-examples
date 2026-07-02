@@ -158,7 +158,7 @@ export default function ChatPage() {
               OpenAI-Compatible Chatbot
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Powered by Layer AI • Using OpenAI SDK
+              Powered by Verlon AI • Using OpenAI SDK
             </p>
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function ChatPage() {
                 Start a conversation
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                This chatbot uses the OpenAI SDK but can access ANY model via Layer AI
+                This chatbot uses the OpenAI SDK but can access ANY model via Verlon AI
               </p>
             </div>
           )}

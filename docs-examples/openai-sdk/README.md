@@ -1,6 +1,6 @@
 # OpenAI SDK Integration Example
 
-This example tests the code from the [OpenAI SDK Integration documentation](https://docs.uselayer.ai/integrations/openai-sdk).
+This example tests the code from the [OpenAI SDK Integration documentation](https://docs.verlon.ai/integrations/openai-sdk).
 
 ## Setup
 
@@ -11,8 +11,8 @@ cp .env.example .env
 
 2. Fill in your credentials in `.env`:
 ```
-LAYER_API_KEY=your-actual-api-key
-GATE_ID=your-actual-gate-id
+VERLON_API_KEY=your-actual-api-key
+VERLON_GATE_ID=your-actual-gate-id
 ```
 
 3. Install dependencies:
@@ -38,7 +38,7 @@ pnpm streaming
 Tests all three gate specification methods from the documentation:
 1. Using `gateId` (recommended)
 2. Using `model` field
-3. Using `X-Layer-Gate-Id` header
+3. Using `X-Verlon-Gate-Id` header
 
 ```bash
 pnpm all-methods
