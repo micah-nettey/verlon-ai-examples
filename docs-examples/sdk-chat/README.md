@@ -1,6 +1,6 @@
 # SDK Chat Verification Examples
 
-These examples verify the accuracy of the Layer AI SDK chat documentation.
+These examples verify the accuracy of the Verlon AI SDK chat documentation.
 
 ## Setup
 
@@ -10,8 +10,8 @@ cp .env.example .env
 ```
 
 2. Fill in your credentials in `.env`:
-- `LAYER_API_KEY`: Your Layer API key from https://uselayer.ai/dashboard
-- `GATE_ID`: Your gate UUID from the dashboard
+- `VERLON_API_KEY`: Your Verlon API key from https://useverlon.ai/dashboard
+- `VERLON_GATE_ID`: Your gate UUID from the dashboard
 
 3. Install dependencies:
 ```bash
