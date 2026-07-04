@@ -10,10 +10,13 @@ importers:
     dependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.71.0
-        version: 0.71.2
+        version: 0.71.2(zod@3.25.76)
+      '@verlon-ai/sdk':
+        specifier: ^2.0.1
+        version: 2.0.1
       openai:
         specifier: ^6.17.0
-        version: 6.37.0
+        version: 6.37.0(zod@3.25.76)
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -199,6 +202,9 @@ packages:
   '@types/node@20.19.40':
     resolution: {integrity: sha512-xxx6M2IpSTnnKcR0cMvIiohkiCx20/oRPtWGbenFygKCGl3zqUzdNjQ/1V4solq1LU+dgv0nQzeGOuqkqZGg0Q==}
 
+  '@verlon-ai/sdk@2.0.1':
+    resolution: {integrity: sha512-n1ts6G7j9UYaP77sx3k3fyV2nCUqvpqLX4m7GMz0nSApcujcYV49d3lmsSeWk22bqSASnJqN6CLMk9NsKvezhg==}
+
   esbuild@0.27.7:
     resolution: {integrity: sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==}
     engines: {node: '>=18'}
@@ -247,11 +253,21 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
 snapshots:
 
-  '@anthropic-ai/sdk@0.71.2':
+  '@anthropic-ai/sdk@0.71.2(zod@3.25.76)':
     dependencies:
       json-schema-to-ts: 3.1.1
+    optionalDependencies:
+      zod: 3.25.76
 
   '@babel/runtime@7.29.2': {}
 
@@ -337,6 +353,11 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
+  '@verlon-ai/sdk@2.0.1':
+    dependencies:
+      yaml: 2.9.0
+      zod: 3.25.76
+
   esbuild@0.27.7:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.27.7
@@ -378,7 +399,9 @@ snapshots:
       '@babel/runtime': 7.29.2
       ts-algebra: 2.0.0
 
-  openai@6.37.0: {}
+  openai@6.37.0(zod@3.25.76):
+    optionalDependencies:
+      zod: 3.25.76
 
   resolve-pkg-maps@1.0.0: {}
 
@@ -394,3 +417,7 @@ snapshots:
   typescript@5.9.3: {}
 
   undici-types@6.21.0: {}
+
+  yaml@2.9.0: {}
+
+  zod@3.25.76: {}

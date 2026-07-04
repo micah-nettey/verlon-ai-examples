@@ -15,10 +15,12 @@
     "simulate-all": "tsx --env-file=.env.local src/scripts/simulate-all.ts",
     "trigger-ian": "tsx --env-file=.env.local src/scripts/trigger-ian.ts",
     "build": "tsc",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "support-v2": "tsx --env-file=.env.local src/agents/support-v2.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.0",
+    "@verlon-ai/sdk": "^2.0.1",
     "openai": "^6.17.0"
   },
   "devDependencies": {
