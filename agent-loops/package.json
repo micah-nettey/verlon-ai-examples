@@ -16,11 +16,12 @@
     "trigger-ian": "tsx --env-file=.env.local src/scripts/trigger-ian.ts",
     "build": "tsc",
     "type-check": "tsc --noEmit",
-    "support-v2": "tsx --env-file=.env.local src/agents/support-v2.ts"
+    "support-v2": "tsx --env-file=.env.local src/agents/support-v2.ts",
+    "research-v2": "tsx --env-file=.env.local src/agents/research-v2.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.0",
-    "@verlon-ai/sdk": "^2.0.1",
+    "@verlon-ai/sdk": "^2.0.2",
     "openai": "^6.17.0"
   },
   "devDependencies": {

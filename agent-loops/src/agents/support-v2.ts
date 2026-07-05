@@ -31,11 +31,11 @@ const respondTask = support.task('respond');
 // base URL, the trace-aware fetch, and the task identity headers.
 const classifier = new Anthropic({
   apiKey: process.env.VERLON_API_KEY!,
-  ...classifyTask.clientOptions(),
+  ...classifyTask.clientOptions('anthropic'),
 });
 const responder = new Anthropic({
   apiKey: process.env.VERLON_API_KEY!,
-  ...respondTask.clientOptions(),
+  ...respondTask.clientOptions('anthropic'),
 });
 
 // Locally-executed tool the model never sees — wrapped, so it lands on
