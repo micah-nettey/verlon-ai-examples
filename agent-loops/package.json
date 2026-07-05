@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.0",
-    "@verlon-ai/sdk": "^2.1.0",
+    "@verlon-ai/sdk": "^2.1.1",
     "openai": "^6.17.0"
   },
   "devDependencies": {
