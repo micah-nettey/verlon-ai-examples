@@ -46,7 +46,7 @@ const synthesizer = new OpenAI({
 
 const webSearch = verlon.tool('web_search', async (query: string) => {
   const results = await braveSearch(query, 3);
-  return results.map((r) => ({ title: r.title, snippet: r.description }));
+  return results.map((r) => ({ title: r.title, snippet: r.snippet }));
 });
 
 async function research(question: string): Promise<string> {
