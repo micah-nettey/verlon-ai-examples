@@ -50,7 +50,7 @@ const webSearch = verlon.tool('web_search', async (query: string) => {
 });
 
 async function research(question: string): Promise<string> {
-  return orchestrator.trace({ sessionId: 'research_prod_001' }, async (t) => {
+  return orchestrator.trace({ conversationId: 'research_prod_001' }, async (t) => {
     console.log('trace:', t.traceId);
 
     const plan = await planner.chat.completions.create({

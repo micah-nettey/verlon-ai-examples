@@ -63,7 +63,7 @@ function checkShipping(input: { carrier: string; orderId: string }) {
 }
 
 async function handleTicket(message: string): Promise<string> {
-  return support.trace({ sessionId: 'ticket_e2e_001' }, async (t) => {
+  return support.trace({ conversationId: 'ticket_e2e_001' }, async (t) => {
     console.log('trace started:', t.traceId);
 
     const classification = await classifier.messages.create({
