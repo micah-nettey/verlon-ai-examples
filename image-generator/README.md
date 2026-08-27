@@ -1,6 +1,6 @@
 # AI Image Generator with Verlon AI
 
-An AI-powered image generation demo built with [Verlon AI](https://verlon.ai) and Next.js. This example showcases Verlon AI's **automatic task type inference** feature - no need to specify the request type!
+An AI-powered image generation demo built with [Verlon AI](https://verlon.ai) and Next.js. This example calls Verlon AI's OpenAI-compatible images endpoint with the official OpenAI SDK — `openai.images.generate()` works unchanged, with a Verlon gate ID in the `model` field.
 
 ![Verlon AI Image Generator](https://img.shields.io/badge/Verlon%20AI-Image%20Generator-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
@@ -8,43 +8,35 @@ An AI-powered image generation demo built with [Verlon AI](https://verlon.ai) an
 
 ## Features
 
-- 🎨 **AI Image Generation** - Create images from text prompts using GPT Image, Gemini, and other models
-- 🔄 **Automatic Type Inference** - No need to specify `type: 'image'` - Verlon AI infers it from your gate's `taskType`
-- 🚀 **Smart Routing** - Automatic model selection and fallback handling
-- 💰 **Cost Tracking** - See the exact cost of each image generation
-- ⚡ **Fast Performance** - Built with Next.js 16 and modern React
-- 📊 **Usage Tracking** - All requests automatically tracked in your Verlon AI dashboard
+- **AI Image Generation** - Create images from text prompts using GPT Image, Gemini, and other models
+- **Drop-in OpenAI SDK Compatibility** - `openai.images.generate()` against `https://api.verlon.ai/v1`
+- **Smart Routing** - Automatic model selection and fallback handling
+- **Fast Performance** - Built with Next.js 16 and modern React
+- **Usage Tracking** - All requests automatically tracked in your Verlon AI dashboard
 
 ## What This Demo Showcases
 
-This example demonstrates Verlon AI's **type-safe methods with compile-time validation**:
+The official OpenAI SDK's images API pointed at Verlon AI:
 
-### Legacy Way (`complete()`)
 ```typescript
-const result = await verlon.complete({
-  gateId: 'your-gate-id',
-  type: 'image', // ❌ Required - repetitive and error-prone
-  data: {
-    prompt: 'A sunset over mountains',
-  },
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
 });
-```
 
-### Type-Safe Way (`image()`)
-```typescript
-const result = await verlon.image({
-  gateId: 'your-gate-id',
-  data: {
-    prompt: 'A sunset over mountains',
-  },
+const result = await openai.images.generate({
+  model: 'your-gate-id', // Verlon gate ID — the gate config picks the image model
+  prompt: 'A sunset over mountains',
+  n: 1,
 });
 ```
 
 **Benefits:**
-- Type-safe requests with compile-time validation
-- IDE autocomplete for all parameters
-- Cleaner, more intuitive API
-- Catches errors before runtime
+- No Verlon-specific SDK to learn — your existing OpenAI image code just works
+- Switch the gate to a different image model in the dashboard; the code never changes
+- Automatic fallbacks, cost tracking, and usage analytics handled by Verlon AI
 
 ## Prerequisites
 
@@ -71,12 +63,10 @@ Create a gate in your Verlon AI dashboard:
 1. Go to the [Verlon AI Dashboard](https://verlon.ai/dashboard)
 2. Create a new gate with:
    - **Name**: `image-generator` (or your custom name)
-   - **Task Type**: `image` ⭐ **This is key - Verlon AI will automatically use this!**
+   - **Task Type**: `image`
    - **Primary Model**: Choose an image model (e.g., `gpt-image-1`)
    - **Fallback Models**: Add fallback image models for reliability
 3. Copy the gate ID — you'll need it in the next step.
-
-> **Important**: Setting the gate's `taskType` to `image` tells Verlon AI that all requests to this gate are for image generation. You don't need to specify `type: 'image'` in your code!
 
 ### 3. Configure Environment Variables
 
@@ -88,7 +78,7 @@ VERLON_API_KEY=your_api_key_here
 VERLON_GATE_ID=your_gate_id_here
 ```
 
-Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai`.
+Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai` (the `/v1` suffix is added in code).
 
 ### 4. Run the Development Server
 
@@ -105,12 +95,12 @@ image-generator/
 ├── app/
 │   ├── api/
 │   │   └── generate/
-│   │       └── route.ts      # Image generation API endpoint
+│   │       └── route.ts      # Image generation API endpoint using the OpenAI SDK
 │   ├── layout.tsx            # Root layout with metadata
 │   ├── page.tsx              # Main image generator interface
 │   └── globals.css           # Global styles
 ├── lib/
-│   └── verlon.ts             # Verlon AI SDK initialization
+│   └── verlon.ts             # OpenAI client configured for Verlon AI
 ├── .env.local                # Environment variables (create this)
 ├── package.json
 └── README.md
@@ -126,71 +116,49 @@ The user types an image description in the text area.
 
 ```typescript
 // app/api/generate/route.ts
-const result = await verlon.image({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    prompt: userPrompt,
-  },
+const result = await openai.images.generate({
+  model: process.env.VERLON_GATE_ID,
+  prompt: userPrompt,
+  n: 1,
 });
-```
 
-Notice we're using the **type-safe `verlon.image()`** method! This provides:
-- Compile-time type checking for image-specific parameters
-- IDE autocomplete for all valid options
-- Better error messages if you pass invalid data
+const firstImage = result.data?.[0];
+const imageUrl = firstImage?.url ||
+  (firstImage?.b64_json ? `data:image/png;base64,${firstImage.b64_json}` : undefined);
+```
 
 ### 3. Verlon AI Handles Everything
 
 Verlon AI:
-- Uses the gate's `taskType` to determine this is an image request
+- Resolves the gate from the `model` field
 - Routes to your configured image generation model
 - Handles retries and fallbacks automatically
 - Tracks cost and usage
-- Returns the generated image URL
+- Returns an OpenAI-shaped images response (`data[0].url` or `data[0].b64_json`)
 
 ### 4. Display Result
 
 The UI displays:
 - Generated image
-- Model that handled the request
-- Cost of the generation
+- Generation latency
 - Image URL for downloading
 
 ## Key Components
 
 ### Image Generation API Route (`app/api/generate/route.ts`)
 
-Handles image generation using the Verlon AI SDK:
+Handles image generation using the OpenAI SDK against Verlon AI.
+
+### OpenAI Client Initialization (`lib/verlon.ts`)
+
+Configures the OpenAI client against Verlon AI's OpenAI-compatible endpoint:
 
 ```typescript
-import { verlon } from '@/lib/verlon';
+import OpenAI from 'openai';
 
-const result = await verlon.image({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    prompt: userPrompt,
-    size: '1024x1024',
-    quality: 'standard',
-  },
-});
-
-return NextResponse.json({
-  imageUrl: result.content,
-  model: result.model,
-  cost: result.cost,
-});
-```
-
-### Verlon SDK Initialization (`lib/verlon.ts`)
-
-Configures the Verlon AI client:
-
-```typescript
-import { Verlon } from '@verlon-ai/sdk';
-
-export const verlon = new Verlon({
+export const openai = new OpenAI({
   apiKey: process.env.VERLON_API_KEY,
-  baseUrl: process.env.VERLON_BASE_URL,
+  baseURL: 'https://api.verlon.ai/v1',
 });
 ```
 
@@ -208,28 +176,17 @@ Update the gate ID in your environment variables:
 VERLON_GATE_ID=your-custom-gate-id
 ```
 
-Or pass it directly in the code:
-
-```typescript
-const result = await verlon.image({
-  gateId: 'your-custom-gate-id',
-  data: { prompt },
-});
-```
-
 ### Modify Image Parameters
 
-Add custom parameters to the request:
+Add standard OpenAI image parameters to the request:
 
 ```typescript
-const result = await verlon.image({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    prompt: userPrompt,
-    size: '1792x1024',      // Different size
-    quality: 'hd',          // Higher quality
-    style: 'vivid',         // vivid or natural style
-  },
+const result = await openai.images.generate({
+  model: process.env.VERLON_GATE_ID,
+  prompt: userPrompt,
+  n: 1,
+  size: '1792x1024',      // Different size
+  quality: 'hd',          // Higher quality
 });
 ```
 
@@ -282,7 +239,7 @@ Run `pnpm install` to ensure all dependencies are installed correctly.
 ## Learn More
 
 - [Verlon AI Documentation](https://docs.verlon.ai)
-- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
+- [OpenAI SDK Compatibility Guide](https://docs.verlon.ai/provider-compatibility/openai)
 - [Next.js Documentation](https://nextjs.org/docs)
 
 ## License

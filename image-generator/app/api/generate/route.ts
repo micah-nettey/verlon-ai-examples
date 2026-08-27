@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verlon } from '@/lib/verlon';
+import { openai } from '@/lib/verlon';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,23 +23,19 @@ export async function POST(req: NextRequest) {
 
     const startTime = Date.now();
 
-    const result = await verlon.image({
-      gateId,
-      data: {
-        prompt: prompt,
-      },
+    const result = await openai.images.generate({
+      model: gateId,
+      prompt,
+      n: 1,
     });
 
     const latency = Date.now() - startTime;
 
-    // Extract image URL or base64 from the images array
-    const firstImage = result.images?.[0];
-    const imageUrl = firstImage?.url || (firstImage?.base64 ? `data:image/png;base64,${firstImage.base64}` : undefined);
+    const firstImage = result.data?.[0];
+    const imageUrl = firstImage?.url || (firstImage?.b64_json ? `data:image/png;base64,${firstImage.b64_json}` : undefined);
 
     return NextResponse.json({
       content: imageUrl,
-      model: result.model,
-      cost: result.cost,
       latency,
     });
   } catch (error: any) {
