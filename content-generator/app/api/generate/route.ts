@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verlon } from '@/lib/verlon';
+import { openai } from '@/lib/verlon';
 
 export async function POST(req: NextRequest) {
   let gateId: string | undefined;
@@ -17,16 +17,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = await verlon.chat({
-      gateId,
-      data: {
-        messages: [
-          { role: 'user', content: prompt }
-        ],
-      },
+    const completion = await openai.chat.completions.create({
+      model: gateId,
+      messages: [
+        { role: 'user', content: prompt }
+      ],
     });
 
-    return NextResponse.json({ content: result.content });
+    return NextResponse.json({
+      content: completion.choices[0]?.message?.content ?? '',
+    });
   } catch (error: any) {
     console.error('Generation error:', error);
     console.error('Error details:', {

@@ -1,14 +1,13 @@
 # AI Content Generator
 
-An AI-powered content generation demo built with [Verlon AI](https://verlon.ai) and Next.js.
+An AI-powered content generation demo built with [Verlon AI](https://verlon.ai) and Next.js, using the official OpenAI SDK against Verlon AI's OpenAI-compatible endpoint.
 
 ## Features
 
 - **Blog Post Outlines** - Generate structured blog post outlines from topics
 - **Social Media Captions** - Create engaging social media content
 - **Product Descriptions** - Write compelling e-commerce product descriptions
-- **Automatic Type Inference** - No need to specify task type, Verlon AI uses your gate's configuration
-- **Cost Tracking** - See the cost and model used for each generation
+- **Gate-Based Routing** - Each content type routes through its own Verlon AI gate
 - **Smart Routing** - Automatic model selection with fallback strategies
 - **Usage Tracking** - All requests tracked automatically in your Verlon AI dashboard
 
@@ -17,7 +16,7 @@ An AI-powered content generation demo built with [Verlon AI](https://verlon.ai) 
 - **Next.js 16** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
-- **Verlon AI SDK** - AI routing and completion management
+- **OpenAI SDK** - Pointed at Verlon AI's OpenAI-compatible endpoint
 
 ## Getting Started
 
@@ -70,27 +69,30 @@ pnpm dev
 
 This example demonstrates Verlon AI's key features:
 
-1. **Gate-based routing** - Each content type uses a different gate with optimized models
-2. **Automatic type inference** - Task type is automatically inferred from the gate's `taskType` configuration
+1. **Drop-in OpenAI SDK compatibility** - The official `openai` package works unchanged against `https://api.verlon.ai/v1`
+2. **Gate-based routing** - Each content type uses a different gate with optimized models; the gate ID goes in the `model` field
 3. **Fallback strategies** - If primary model fails, automatically tries backup models
 4. **Cost tracking** - Every request logs cost, latency, and tokens used
-5. **Metadata display** - See which model was actually used for each request
-6. **Usage tracking** - All requests are automatically tracked in your Verlon AI dashboard
+5. **Usage tracking** - All requests are automatically tracked in your Verlon AI dashboard
 
-### Type-Safe API
-
-Use the type-safe `verlon.chat()` method for compile-time validation:
+### Calling Verlon AI with the OpenAI SDK
 
 ```typescript
-// Type-safe method with IDE autocomplete and validation
-const result = await verlon.chat({
-  gateId: 'your-gate-id',
-  data: {
-    messages: [
-      { role: 'user', content: prompt }
-    ],
-  },
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
 });
+
+const completion = await openai.chat.completions.create({
+  model: 'your-gate-id', // Verlon gate ID — the gate config picks the model
+  messages: [
+    { role: 'user', content: prompt }
+  ],
+});
+
+const content = completion.choices[0]?.message?.content;
 ```
 
 ## Project Structure
@@ -99,17 +101,17 @@ const result = await verlon.chat({
 content-generator/
 ├── app/
 │   ├── api/
-│   │   └── generate/route.ts    # API route for Verlon AI completions
+│   │   └── generate/route.ts    # API route calling Verlon AI via the OpenAI SDK
 │   ├── page.tsx                 # Main UI with content-type tabs
 │   └── layout.tsx               # App layout
 └── lib/
-    └── verlon.ts                # Verlon AI client setup
+    └── verlon.ts                # OpenAI client configured for Verlon AI
 ```
 
 ## Learn More
 
 - [Verlon AI Documentation](https://docs.verlon.ai)
-- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
+- [OpenAI SDK Compatibility Guide](https://docs.verlon.ai/provider-compatibility/openai)
 - [Next.js Documentation](https://nextjs.org/docs)
 
 ## License
