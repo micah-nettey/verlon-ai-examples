@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Verlon } from '@verlon-ai/sdk';
+import OpenAI from 'openai';
 
 config({ path: '.env', override: true });
 
@@ -9,16 +9,18 @@ if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
   process.exit(1);
 }
 
-const verlon = new Verlon({ apiKey: process.env.VERLON_API_KEY });
-
-const response = await verlon.image({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    prompt: 'A colorful abstract painting with geometric shapes'
-  }
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
 });
 
-console.log('Generated', response.images?.length || 1, 'images');
-console.log('Response:', response);
-console.log('Total cost:', response.cost);
-console.log('Model:', response.model);
+const response = await openai.images.generate({
+  model: process.env.VERLON_GATE_ID,  // Gate UUID as model
+  prompt: 'A colorful abstract painting with geometric shapes',
+  n: 2,
+});
+
+console.log('Generated', response.data?.length ?? 0, 'images');
+for (const image of response.data ?? []) {
+  console.log('URL:', image.url);
+}

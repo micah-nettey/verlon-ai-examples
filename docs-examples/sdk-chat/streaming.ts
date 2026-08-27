@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Verlon } from '@verlon-ai/sdk';
+import OpenAI from 'openai';
 
 config({ path: '.env', override: true });
 
@@ -9,21 +9,21 @@ if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
   process.exit(1);
 }
 
-const verlon = new Verlon({
-  apiKey: process.env.VERLON_API_KEY
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
 });
 
 // Streaming example from documentation
-const stream = verlon.chatStream({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    messages: [
-      { role: 'user', content: 'Write a poem about the ocean' }
-    ]
-  }
+const stream = await openai.chat.completions.create({
+  model: process.env.VERLON_GATE_ID,  // Gate UUID as model
+  messages: [
+    { role: 'user', content: 'Write a poem about the ocean' }
+  ],
+  stream: true,
 });
 
 for await (const chunk of stream) {
-  process.stdout.write(chunk.content || '');
+  process.stdout.write(chunk.choices[0]?.delta?.content || '');
 }
 console.log('\n');

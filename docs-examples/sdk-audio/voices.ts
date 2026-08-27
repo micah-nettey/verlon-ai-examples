@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
-import { Verlon } from '@verlon-ai/sdk';
+import { writeFileSync } from 'node:fs';
+import OpenAI from 'openai';
 
 config({ override: true });
 
@@ -9,21 +10,21 @@ if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
   process.exit(1);
 }
 
-const verlon = new Verlon({ apiKey: process.env.VERLON_API_KEY });
-
-const response = await verlon.tts({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    input: 'The weather today is sunny and warm, perfect for a walk in the park.',
-    voice: 'alloy'
-  }
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
 });
 
+const response = await openai.audio.speech.create({
+  model: process.env.VERLON_GATE_ID,  // Gate UUID as model
+  voice: 'alloy',
+  input: 'The weather today is sunny and warm, perfect for a walk in the park.',
+});
+
+const audio = Buffer.from(await response.arrayBuffer());
+writeFileSync('speech-alloy.mp3', audio);
+
 console.log('Audio generated with voice selection!');
-console.log('Response:', response);
 console.log('Voice used: alloy');
-console.log('Cost:', response.cost);
-console.log('Model:', response.model);
-if (response.audio.duration) {
-  console.log('Duration:', response.audio.duration, 'seconds');
-}
+console.log('Saved to: speech-alloy.mp3');
+console.log('Bytes:', audio.length);

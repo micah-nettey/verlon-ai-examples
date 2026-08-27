@@ -1,6 +1,6 @@
 # Quickstart Example
 
-This example tests the code from the [Quickstart documentation](https://docs.useverlon.ai/getting-started/quickstart).
+This example tests the code from the [Quickstart documentation](https://docs.verlon.ai/getting-started/quickstart).
 
 ## Setup
 

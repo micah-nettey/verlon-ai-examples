@@ -1,17 +1,15 @@
 {
   "name": "sdk-chat-example",
   "version": "1.0.0",
-  "description": "Verification examples for Verlon AI SDK chat documentation",
+  "description": "Verification examples for Verlon AI chat documentation",
   "type": "module",
   "scripts": {
     "basic": "tsx basic.ts",
-    "streaming": "tsx streaming.ts",
-    "vision": "tsx vision.ts",
-    "function-calling": "tsx function-calling.ts"
+    "streaming": "tsx streaming.ts"
   },
   "dependencies": {
-    "@verlon-ai/sdk": "^1.2.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "openai": "^6.17.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
