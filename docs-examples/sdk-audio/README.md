@@ -1,6 +1,6 @@
 # SDK Audio/TTS Examples
 
-This directory contains examples for using the Verlon AI SDK's `tts()` method for text-to-speech generation.
+This directory contains examples for text-to-speech generation through Verlon AI using the official `openai` package's `audio.speech.create()` method. Each example writes the generated audio to an `.mp3` file in this directory.
 
 ## Setup
 
@@ -10,9 +10,9 @@ This directory contains examples for using the Verlon AI SDK's `tts()` method fo
 
 ## Examples
 
-- `basic.ts` - Basic text-to-speech conversion
-- `voices.ts` - Using different voice options
-- `formats.ts` - Audio format and speed configuration
+- `basic.ts` - Basic text-to-speech conversion (writes `speech.mp3`)
+- `voices.ts` - Using different voice options (writes `speech-alloy.mp3`)
+- `formats.ts` - Audio format and speed configuration (writes `speech-formatted.mp3`)
 
 ## Running
 

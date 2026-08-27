@@ -1,43 +1,43 @@
 # Verlon AI Examples
 
-A collection of example applications showcasing how to use [Verlon AI](https://verlon.ai) for AI-powered features.
+A collection of example applications showcasing how to use [Verlon AI](https://verlon.ai) for AI-powered features. Inference examples call Verlon through the official `openai` package against Verlon's OpenAI-compatible endpoint (`https://api.verlon.ai/v1`) with a gate ID in the `model` field; [`@verlon-ai/sdk`](https://www.npmjs.com/package/@verlon-ai/sdk) is Verlon's observability and tracing SDK (see [Agent Loops](./agent-loops)).
 
 ## Full Applications
 
 ### [AI Chatbot](./chatbot)
-Modern conversational AI chatbot with message history, real-time cost tracking, and performance metrics. Showcases Verlon AI's smart routing, model normalization, automatic fallback handling, and simplified API with automatic task type inference.
+Modern conversational AI chatbot with message history and performance metrics, built with the official OpenAI SDK against Verlon's OpenAI-compatible endpoint. Showcases Verlon AI's smart routing, model normalization, and automatic fallback handling.
 
-**Stack:** Next.js, TypeScript, Tailwind CSS
-**Features:** Gate-based routing, automatic type inference, cost tracking, latency monitoring, dark mode
+**Stack:** Next.js, TypeScript, Tailwind CSS, OpenAI SDK
+**Features:** Gate-based routing, latency monitoring, dark mode
 
 ### [Content Generator](./content-generator)
-AI-powered content generation for blogs, social media, and product descriptions. Demonstrates Verlon AI's routing, fallback strategies, cost tracking, and simplified request API.
+AI-powered content generation for blogs, social media, and product descriptions using the OpenAI SDK, with one Verlon gate per content type. Demonstrates Verlon AI's routing, fallback strategies, and cost tracking.
 
-**Stack:** Next.js, TypeScript, Tailwind CSS
+**Stack:** Next.js, TypeScript, Tailwind CSS, OpenAI SDK
 
 ### [Image Generator](./image-generator)
-AI-powered image generation with GPT Image, Gemini, and other models. Shows how Verlon AI automatically infers task type from gate configuration, eliminating the need to specify type in requests.
+AI-powered image generation with GPT Image, Gemini, and other models via `openai.images.generate()` against Verlon's OpenAI-compatible images endpoint.
 
-**Stack:** Next.js, TypeScript, Tailwind CSS
-**Features:** Automatic type inference, multi-modal support, cost tracking
+**Stack:** Next.js, TypeScript, Tailwind CSS, OpenAI SDK
+**Features:** Gate-based routing, multi-modal support, cost tracking
 
 ### [Recipe Generator](./recipe-generator)
-Backend API that generates recipes from grocery lists. Express.js example demonstrating vendor-agnostic AI integration, model switching without code changes, and Firebase Functions compatibility. Perfect for understanding Verlon AI's value in production backends.
+Backend API that generates recipes from grocery lists. Express.js example using the OpenAI SDK against Verlon, demonstrating vendor-agnostic AI integration, model switching without code changes, and Firebase Functions compatibility. Perfect for understanding Verlon AI's value in production backends.
 
-**Stack:** Express.js, TypeScript
+**Stack:** Express.js, TypeScript, OpenAI SDK
 **Features:** Model switching without deployment, cost tracking, Firebase-ready, complete demo script
 
 ## Drop-In Provider Compatibility
 
 ### [OpenAI SDK Chatbot](./openai-chatbot)
-Streaming chatbot built with the **official OpenAI SDK** pointed at Verlon's OpenAI-compatible endpoint. No Verlon SDK required — change the base URL and route through a gate to any model.
+Streaming chatbot built with the **official OpenAI SDK** pointed at Verlon's OpenAI-compatible endpoint — the canonical way to call Verlon for inference. Change the base URL and route through a gate to any model.
 
 **Stack:** Next.js, TypeScript, OpenAI SDK
 
 ### [Agent Loops](./agent-loops)
-Production-style agent loops (research orchestrator, customer support with specialist routing, document extractor) built on the Anthropic and OpenAI SDKs, demonstrating drop-in Verlon adoption: change a base URL and one header, and every agent call routes through Verlon with multi-turn session tracking. Includes session simulators for generating realistic traffic.
+Production-style agent loops (research orchestrator, customer support with specialist routing, document extractor) built on the Anthropic and OpenAI SDKs, demonstrating drop-in Verlon adoption: change a base URL and one header, and every agent call routes through Verlon with multi-turn session tracking. The showcase for [`@verlon-ai/sdk`](https://www.npmjs.com/package/@verlon-ai/sdk), Verlon's observability and tracing SDK — agent scopes, traced tools, and instrumented fetch. Includes session simulators for generating realistic traffic.
 
-**Stack:** Node.js, TypeScript, Anthropic SDK, OpenAI SDK
+**Stack:** Node.js, TypeScript, Anthropic SDK, OpenAI SDK, @verlon-ai/sdk (tracing)
 
 ## Tooling Quickstarts
 
@@ -89,7 +89,8 @@ cd verlon-ai-examples/content-generator
 ## Learn More
 
 - [Verlon AI Documentation](https://docs.verlon.ai)
-- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
+- [OpenAI SDK Compatibility Guide](https://docs.verlon.ai/provider-compatibility/openai)
+- [Verlon AI SDK (observability and tracing)](https://www.npmjs.com/package/@verlon-ai/sdk)
 - [Verlon AI CLI](https://www.npmjs.com/package/@verlon-ai/cli)
 
 ## Contributing

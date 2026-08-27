@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Verlon } from '@verlon-ai/sdk';
+import OpenAI from 'openai';
 
 config({ path: '.env', override: true });
 
@@ -9,20 +9,19 @@ if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
   process.exit(1);
 }
 
-const verlon = new Verlon({ apiKey: process.env.VERLON_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
+});
 
-const response = await verlon.image({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    prompt: 'A cute robot reading a book',
-    size: '1024x1024',
-    quality: 'hd'
-  }
+const response = await openai.images.generate({
+  model: process.env.VERLON_GATE_ID,  // Gate UUID as model
+  prompt: 'A cute robot reading a book',
+  size: '1024x1024',
+  quality: 'hd',
 });
 
 console.log('HD Image generated successfully!');
-console.log('Response:', response);
+console.log('URL:', response.data?.[0]?.url);
 console.log('Size:', '1024x1024');
 console.log('Quality:', 'hd');
-console.log('Cost:', response.cost);
-console.log('Model:', response.model);

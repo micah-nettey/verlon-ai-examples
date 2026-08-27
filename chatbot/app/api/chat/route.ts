@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verlon } from '@/lib/verlon';
+import { openai } from '@/lib/verlon';
 
 export async function POST(req: NextRequest) {
   let messages: any[] | undefined;
@@ -25,19 +25,16 @@ export async function POST(req: NextRequest) {
 
     const startTime = Date.now();
 
-    const result = await verlon.chat({
-      gateId,
-      data: {
-        messages,
-      },
+    const completion = await openai.chat.completions.create({
+      model: gateId,
+      messages,
     });
 
     const latency = Date.now() - startTime;
 
     return NextResponse.json({
-      content: result.content,
-      model: result.model,
-      cost: result.cost,
+      content: completion.choices[0]?.message?.content ?? '',
+      model: completion.model,
       latency,
     });
   } catch (error: any) {

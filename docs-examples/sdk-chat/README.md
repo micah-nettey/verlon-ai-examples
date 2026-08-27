@@ -1,6 +1,6 @@
 # SDK Chat Verification Examples
 
-These examples verify the accuracy of the Verlon AI SDK chat documentation.
+These examples verify the accuracy of the Verlon AI chat documentation, using the official `openai` package against the Verlon gateway.
 
 ## Setup
 
@@ -10,7 +10,7 @@ cp .env.example .env
 ```
 
 2. Fill in your credentials in `.env`:
-- `VERLON_API_KEY`: Your Verlon API key from https://useverlon.ai/dashboard
+- `VERLON_API_KEY`: Your Verlon API key from https://verlon.ai/dashboard
 - `VERLON_GATE_ID`: Your gate UUID from the dashboard
 
 3. Install dependencies:
@@ -33,6 +33,7 @@ pnpm streaming
 ## What This Verifies
 
 From [/sdk-reference/chat](/sdk-reference/chat):
-- ✓ Basic chat with system and user messages
-- ✓ Streaming with `chatStream()`
-- ✓ Response structure (content, cost, model)
+- ✓ The `openai` client with `baseURL: 'https://api.verlon.ai/v1'` and the gate UUID as `model`
+- ✓ Basic chat with system and user messages via `chat.completions.create()`
+- ✓ Streaming with `stream: true` and `chunk.choices[0]?.delta?.content`
+- ✓ Response structure (`choices[0].message.content`, `model`, `usage`)

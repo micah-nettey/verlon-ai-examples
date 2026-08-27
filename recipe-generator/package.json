@@ -1,7 +1,7 @@
 {
   "name": "recipe-generator",
   "version": "0.1.0",
-  "description": "Recipe generation API using Verlon AI - Express.js backend example",
+  "description": "Recipe generation API using Verlon AI via the OpenAI SDK - Express.js backend example",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,9 +10,9 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@verlon-ai/sdk": "^1.2.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "openai": "^6.17.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

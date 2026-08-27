@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { Verlon } from '@verlon-ai/sdk';
+import OpenAI from 'openai';
 
 config({ path: '.env', override: true });
 
@@ -9,17 +9,16 @@ if (!process.env.VERLON_API_KEY || !process.env.VERLON_GATE_ID) {
   process.exit(1);
 }
 
-const verlon = new Verlon({
-  apiKey: process.env.VERLON_API_KEY
+const openai = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY,
+  baseURL: 'https://api.verlon.ai/v1',
 });
 
-const response = await verlon.chat({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    messages: [
-      { role: 'user', content: 'Explain quantum computing in simple terms' }
-    ]
-  }
+const response = await openai.chat.completions.create({
+  model: process.env.VERLON_GATE_ID,  // Gate UUID as model
+  messages: [
+    { role: 'user', content: 'Explain quantum computing in simple terms' }
+  ],
 });
 
-console.log(response.content);
+console.log(response.choices[0].message.content);

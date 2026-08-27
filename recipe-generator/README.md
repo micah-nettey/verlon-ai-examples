@@ -1,6 +1,6 @@
 # Recipe Generator with Verlon AI
 
-A backend API that generates recipes from grocery lists using Verlon AI. This Express.js example demonstrates vendor-agnostic AI integration, model switching without code changes, and Firebase Functions compatibility.
+A backend API that generates recipes from grocery lists using Verlon AI. This Express.js example uses the official OpenAI SDK against Verlon AI's OpenAI-compatible endpoint, demonstrating vendor-agnostic AI integration, model switching without code changes, and Firebase Functions compatibility.
 
 ![Verlon AI](https://img.shields.io/badge/Verlon%20AI-Recipe%20Generator-blue)
 ![Express.js](https://img.shields.io/badge/Express.js-5.1-green)
@@ -8,20 +8,20 @@ A backend API that generates recipes from grocery lists using Verlon AI. This Ex
 
 ## Features
 
-- 🥘 **Smart Recipe Generation** - Generate creative recipes from any ingredient list
-- 🔄 **Model Switching** - Switch between GPT-4, Claude, Gemini without code changes
-- 📊 **Real-time Metrics** - Track model used, cost, and latency for each request
-- 🔥 **Firebase-Ready** - 3-line adaptation to Firebase Functions (guide below)
-- ⚡ **Production-Ready** - Express.js backend with proper error handling and CORS
-- 💰 **Cost Tracking** - Monitor AI costs per request
+- **Smart Recipe Generation** - Generate creative recipes from any ingredient list
+- **Model Switching** - Switch between GPT-4, Claude, Gemini without code changes
+- **Real-time Metrics** - Track model used and latency for each request
+- **Firebase-Ready** - 3-line adaptation to Firebase Functions (guide below)
+- **Production-Ready** - Express.js backend with proper error handling and CORS
+- **Cost Tracking** - Monitor AI costs per request in the Verlon AI dashboard
 
 ## What This Demo Showcases
 
 This recipe generator demonstrates Verlon AI's core value propositions:
 
 1. **Vendor Lock-in Solution**: Switch AI providers instantly via dashboard - no code changes or redeployments
-2. **Model Experimentation**: Test GPT-4, Claude, Gemini side-by-side to find the best fit
-3. **Cost Optimization**: Track costs per request and switch to cheaper models when needed
+2. **Drop-in OpenAI SDK Compatibility**: The official `openai` package works unchanged against `https://api.verlon.ai/v1`
+3. **Model Experimentation**: Test GPT-4, Claude, Gemini side-by-side to find the best fit
 4. **Automatic Fallbacks**: If primary model fails, Verlon AI routes to fallback models
 5. **Usage Analytics**: All requests tracked in Verlon AI dashboard with cost and performance metrics
 
@@ -68,7 +68,7 @@ VERLON_GATE_ID=your_gate_id_here
 PORT=3000
 ```
 
-Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai`.
+Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai` (the `/v1` suffix is added in code).
 
 ### 4. Run the Development Server
 
@@ -83,9 +83,9 @@ The API will be running at [http://localhost:3000](http://localhost:3000).
 ```
 recipe-generator/
 ├── src/
-│   ├── index.ts              # Express server with Verlon AI integration
+│   ├── index.ts              # Express server calling Verlon AI via the OpenAI SDK
 │   └── lib/
-│       └── verlon.ts         # Verlon AI SDK initialization
+│       └── verlon.ts         # OpenAI client configured for Verlon AI
 ├── .env.local                # Environment variables
 ├── package.json
 ├── tsconfig.json
@@ -113,7 +113,6 @@ curl -X POST http://localhost:3000/recipe \
   "recipe": "# Lemon Garlic Chicken with Spinach\n\n## Prep Time: 10 minutes\n## Cook Time: 20 minutes\n## Difficulty: Easy\n\n### Ingredients:\n- 2 chicken breasts\n- 2 cups fresh spinach\n- 3 cloves garlic, minced\n- 2 tbsp olive oil\n- 1 lemon (juice and zest)\n\n### Instructions:\n1. Season chicken with salt and pepper...",
   "metadata": {
     "model": "gpt-4o",
-    "cost": 0.00234,
     "latency": "1847ms",
     "ingredients": ["chicken breast", "spinach", "garlic", "olive oil", "lemon"]
   }
@@ -146,34 +145,31 @@ fetch('http://localhost:3000/recipe', {
 
 ```typescript
 // src/index.ts
-const result = await verlon.chat({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    messages: [
-      {
-        role: 'system',
-        content: 'You are a creative chef assistant...',
-      },
-      {
-        role: 'user',
-        content: `Generate a delicious recipe using these ingredients: ${groceryList.join(', ')}`,
-      },
-    ],
-  },
+const completion = await openai.chat.completions.create({
+  model: process.env.VERLON_GATE_ID, // Verlon gate ID picks the actual model
+  messages: [
+    {
+      role: 'user',
+      content: `Generate a delicious recipe using these ingredients: ${groceryList.join(', ')}`,
+    },
+  ],
 });
+
+const recipe = completion.choices[0]?.message?.content;
 ```
 
 ### 3. Verlon AI Handles Routing
 
 Verlon AI:
+- Resolves the gate from the `model` field
 - Routes the request to your configured primary model
 - Automatically handles retries and fallbacks if needed
 - Tracks cost and usage
-- Returns normalized response
+- Returns an OpenAI-shaped response
 
 ### 4. Response Includes Metadata
 
-The API returns the recipe content plus metadata about the request (model, cost, latency).
+The API returns the recipe content plus metadata about the request (model, latency).
 
 ## Adapting to Firebase Functions
 
@@ -185,8 +181,11 @@ This Express.js code adapts to Firebase Functions with minimal changes:
 // src/index.ts
 app.post('/recipe', async (req: Request, res: Response) => {
   const { groceryList } = req.body;
-  const result = await verlon.chat({ gateId: process.env.VERLON_GATE_ID, data: { messages } });
-  res.json({ recipe: result.content, metadata: { ... } });
+  const completion = await openai.chat.completions.create({
+    model: process.env.VERLON_GATE_ID,
+    messages,
+  });
+  res.json({ recipe: completion.choices[0]?.message?.content, metadata: { ... } });
 });
 ```
 
@@ -195,12 +194,15 @@ app.post('/recipe', async (req: Request, res: Response) => {
 ```typescript
 // functions/src/index.ts
 import { onRequest } from 'firebase-functions/v2/https';
-import { verlon } from './lib/verlon';
+import { openai } from './lib/verlon';
 
 export const generateRecipe = onRequest(async (req, res) => {
   const { groceryList } = req.body;
-  const result = await verlon.chat({ gateId: process.env.VERLON_GATE_ID, data: { messages } });
-  res.json({ recipe: result.content, metadata: { ... } });
+  const completion = await openai.chat.completions.create({
+    model: process.env.VERLON_GATE_ID,
+    messages,
+  });
+  res.json({ recipe: completion.choices[0]?.message?.content, metadata: { ... } });
 });
 ```
 
@@ -209,16 +211,16 @@ export const generateRecipe = onRequest(async (req, res) => {
 - Wrap handler with `onRequest()` instead of `app.post()`
 - Keep the exact same Verlon AI integration code (no changes!)
 
-The `verlon` client initialization in `lib/verlon.ts` stays identical.
+The `openai` client initialization in `lib/verlon.ts` stays identical.
 
 ## Demo Script for Client Presentation
 
 ### Setup (Before Demo)
 
-1. ✅ Start the API: `pnpm dev`
-2. ✅ Open Verlon AI Dashboard: Show gates page
-3. ✅ Prepare curl command or Postman/Insomnia request
-4. ✅ Have 2-3 ingredient lists ready (simple → complex)
+1. Start the API: `pnpm dev`
+2. Open Verlon AI Dashboard: Show gates page
+3. Prepare curl command or Postman/Insomnia request
+4. Have 2-3 ingredient lists ready (simple to complex)
 
 ### Demo Flow (15-30 minutes)
 
@@ -236,14 +238,14 @@ The `verlon` client initialization in `lib/verlon.ts` stays identical.
 
 **3. Live Demo - First Request (5 min)**
 - Send request with simple ingredients: `["chicken", "rice", "vegetables"]`
-- Show response: recipe + metadata (model, cost, latency)
-- Highlight: "GPT-4 took 1.8s and cost $0.002"
+- Show response: recipe + metadata (model, latency)
+- Highlight the cost of the request in the Verlon AI dashboard
 
 **4. Switch Models Live (5 min)**
 - Open Verlon AI Dashboard
 - Switch gate to Claude Sonnet
 - Send SAME request again (no code changes!)
-- Show response: different recipe, different model, different cost
+- Show response: different recipe, different model
 - **Key Point**: "No deployment. No code change. Just clicked a button."
 
 **5. Show Dashboard Analytics (3 min)**
@@ -272,19 +274,19 @@ The `verlon` client initialization in `lib/verlon.ts` stays identical.
 
 **9. Q&A (5+ min)**
 - Common questions:
-  - "What if Verlon AI goes down?" → Direct API fallback option
-  - "Can we self-host?" → Not currently, but data never stored
-  - "What models are supported?" → OpenAI, Anthropic, Google, Mistral, more coming
-  - "Does this work with streaming?" → Yes (not shown in this demo)
+  - "What if Verlon AI goes down?" - Direct API fallback option
+  - "Can we self-host?" - Not currently, but data never stored
+  - "What models are supported?" - OpenAI, Anthropic, Google, Mistral, more coming
+  - "Does this work with streaming?" - Yes (not shown in this demo)
 
 ### Key Talking Points
 
-✅ **Vendor Lock-in Solution**: Switch providers without code changes
-✅ **Experimentation**: Test models side-by-side with production traffic
-✅ **Cost Optimization**: Track costs per request, switch to cheaper models
-✅ **Reliability**: Automatic fallbacks across providers
-✅ **Analytics**: Built-in cost and performance tracking
-✅ **Universal**: Works with any Node.js backend (Express, Firebase, Lambda)
+- **Vendor Lock-in Solution**: Switch providers without code changes
+- **Experimentation**: Test models side-by-side with production traffic
+- **Cost Optimization**: Track costs per request, switch to cheaper models
+- **Reliability**: Automatic fallbacks across providers
+- **Analytics**: Built-in cost and performance tracking
+- **Universal**: Works with any Node.js backend (Express, Firebase, Lambda)
 
 ### Demo Tips
 
@@ -292,30 +294,33 @@ The `verlon` client initialization in `lib/verlon.ts` stays identical.
 - Show 2-3 model switches to really drive the point home
 - Use ingredient lists they can relate to (their favorite meals)
 - Emphasize "no deployment" repeatedly - this is the killer feature
-- If they ask about their specific use case, translate recipe → their domain
+- If they ask about their specific use case, translate recipe to their domain
 
 ## Customization
 
 ### Change the Gate
 
-Update the gate name in [src/index.ts:36](src/index.ts#L36):
+Update `VERLON_GATE_ID` in `.env.local`:
 
-```typescript
-const result = await verlon.chat({
-  gateId: 'your-gate-name', // Change this
-  data: { messages },
-});
+```bash
+VERLON_GATE_ID=your_other_gate_id
 ```
 
-### Modify the System Prompt
+### Add a System Prompt
 
-Customize the recipe generation style in [src/index.ts:38-42](src/index.ts#L38-L42):
+Customize the recipe generation style in `src/index.ts`:
 
 ```typescript
-{
-  role: 'system',
-  content: 'Your custom instructions for recipe generation...',
-}
+messages: [
+  {
+    role: 'system',
+    content: 'Your custom instructions for recipe generation...',
+  },
+  {
+    role: 'user',
+    content: `Generate a delicious recipe using these ingredients: ...`,
+  },
+],
 ```
 
 ### Add More Endpoints
@@ -366,12 +371,12 @@ Make sure you created `.env.local` with your API key:
 
 ```bash
 VERLON_API_KEY=sk-vrln-xxx
-VERLON_BASE_URL=https://api.verlon.ai
+VERLON_GATE_ID=your_gate_id_here
 ```
 
 ### "Gate not found" or 404 errors
 
-Ensure you created a gate named `recipe-generation` in your Verlon AI dashboard, or update the gate name in the code.
+Ensure the gate exists in your Verlon AI dashboard and `VERLON_GATE_ID` in `.env.local` matches its ID.
 
 ### TypeScript errors
 
@@ -388,7 +393,7 @@ PORT=3001
 ## Learn More
 
 - [Verlon AI Documentation](https://docs.verlon.ai)
-- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
+- [OpenAI SDK Compatibility Guide](https://docs.verlon.ai/provider-compatibility/openai)
 - [Express.js Documentation](https://expressjs.com/)
 - [Firebase Functions Documentation](https://firebase.google.com/docs/functions)
 

@@ -11,12 +11,15 @@ These examples ensure that:
 
 ## Examples
 
-### Verlon SDK
+### Verlon Gateway (official `openai` package)
 
-- **[Quickstart](./quickstart)** — SDK installation and your first chat request
+- **[Quickstart](./quickstart)** — your first chat request through the OpenAI-format gateway
 - **[SDK Chat](./sdk-chat)** — basic and streaming chat completions
 - **[SDK Audio](./sdk-audio)** — text-to-speech with voice, format, and speed options
 - **[SDK Images](./sdk-images)** — image generation with sizes and multiple outputs
+
+### Verlon SDK
+
 - **[SDK Video](./sdk-video)** — video generation with size options
 
 ### Provider SDK Compatibility (no Verlon SDK required)

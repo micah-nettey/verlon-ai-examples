@@ -1,6 +1,6 @@
 # AI Chatbot with Verlon AI
 
-A modern, responsive chatbot that demonstrates Verlon AI's smart routing, model normalization, and cost tracking capabilities. Switch between different AI models seamlessly while maintaining conversation context.
+A modern, responsive chatbot that demonstrates Verlon AI's smart routing, model normalization, and cost tracking capabilities. Built with the official OpenAI SDK pointed at Verlon AI's OpenAI-compatible endpoint — switch between different AI models seamlessly while maintaining conversation context.
 
 ![Verlon AI Chatbot](https://img.shields.io/badge/Verlon%20AI-Chatbot-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black)
@@ -8,21 +8,21 @@ A modern, responsive chatbot that demonstrates Verlon AI's smart routing, model 
 
 ## Features
 
-- 🤖 **Smart AI Routing** - Automatic model selection and fallback handling via Verlon AI gates
-- 💬 **Conversational UI** - Beautiful, modern chat interface with message history
-- 📊 **Real-time Metrics** - View model used, cost, and latency for each response
-- 🎨 **Dark Mode Support** - Seamless light/dark theme switching
-- ⚡ **Fast Performance** - Built with Next.js 16 and Turbopack
-- 🔄 **Context Preservation** - Maintains conversation context across all interactions
+- **Smart AI Routing** - Automatic model selection and fallback handling via Verlon AI gates
+- **Conversational UI** - Beautiful, modern chat interface with message history
+- **Real-time Metrics** - View model used and latency for each response
+- **Dark Mode Support** - Seamless light/dark theme switching
+- **Fast Performance** - Built with Next.js 16 and Turbopack
+- **Context Preservation** - Maintains conversation context across all interactions
 
 ## What This Demo Showcases
 
 This chatbot demonstrates Verlon AI's core capabilities:
 
-1. **Gate-Based Routing**: All chat requests route through a Verlon AI gate that handles model selection
-2. **Automatic Fallbacks**: If the primary model fails, Verlon AI automatically tries fallback models
-3. **Cost Tracking**: See the exact cost of each AI response
-4. **Model Normalization**: Unified API across different AI providers (OpenAI, Anthropic, Google, etc.)
+1. **Drop-in OpenAI SDK compatibility**: The official `openai` package works unchanged against `https://api.verlon.ai/v1`
+2. **Gate-Based Routing**: All chat requests route through a Verlon AI gate that handles model selection — put the gate ID in the `model` field
+3. **Automatic Fallbacks**: If the primary model fails, Verlon AI automatically tries fallback models
+4. **Model Freedom**: Switch the gate to Claude, Gemini, or Mistral in the dashboard; the OpenAI SDK code never changes
 5. **Performance Monitoring**: Track latency for every request
 6. **Usage Tracking**: All requests are automatically tracked in your Verlon AI dashboard
 
@@ -65,7 +65,7 @@ VERLON_API_KEY=your_api_key_here
 VERLON_GATE_ID=your_gate_id_here
 ```
 
-Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai`.
+Get your API key from the [Verlon AI Dashboard](https://verlon.ai/dashboard). `VERLON_BASE_URL` is optional and defaults to `https://api.verlon.ai` (the `/v1` suffix is added in code).
 
 ### 4. Run the Development Server
 
@@ -82,12 +82,12 @@ chatbot/
 ├── app/
 │   ├── api/
 │   │   └── chat/
-│   │       └── route.ts      # Chat API endpoint using Verlon AI SDK
+│   │       └── route.ts      # Chat API endpoint using the OpenAI SDK
 │   ├── layout.tsx            # Root layout with metadata
 │   ├── page.tsx              # Main chat interface
 │   └── globals.css           # Global styles
 ├── lib/
-│   └── verlon.ts             # Verlon AI SDK initialization
+│   └── verlon.ts             # OpenAI client configured for Verlon AI
 ├── .env.local                # Environment variables (create this)
 ├── package.json
 └── README.md
@@ -103,64 +103,59 @@ The user types a message in the chat interface.
 
 ```typescript
 // app/api/chat/route.ts
-const result = await verlon.chat({
-  gateId: process.env.VERLON_GATE_ID,
-  data: {
-    messages,
-  },
+const completion = await openai.chat.completions.create({
+  model: gateId, // Verlon gate ID — the gate config picks the actual model
+  messages,
 });
 ```
-
-> **Note**: Using the type-safe `verlon.chat()` method ensures compile-time validation of your request data and provides better IDE autocomplete support.
 
 ### 3. Verlon AI Handles Routing
 
 Verlon AI:
+- Resolves the gate from the `model` field
 - Routes the request to your configured primary model
 - Automatically handles retries and fallbacks if needed
 - Tracks cost and usage
-- Returns normalized response
+- Returns an OpenAI-shaped response
 
 ### 4. Display Response
 
 The UI displays:
 - AI response content
 - Model that handled the request
-- Cost of the request
 - Latency (response time)
 
 ## Key Components
 
 ### Chat API Route (`app/api/chat/route.ts`)
 
-Handles chat requests using the Verlon AI SDK:
+Handles chat requests using the OpenAI SDK:
 
 ```typescript
-import { verlon } from '@/lib/verlon';
+import { openai } from '@/lib/verlon';
 
-const result = await verlon.chat({
-  gateId,
-  data: { messages },
+const completion = await openai.chat.completions.create({
+  model: gateId,
+  messages,
 });
 
 return NextResponse.json({
-  content: result.content,
-  model: result.model,
-  cost: result.cost,
+  content: completion.choices[0]?.message?.content ?? '',
+  model: completion.model,
   latency,
 });
 ```
 
-### Verlon SDK Initialization (`lib/verlon.ts`)
+### OpenAI Client Initialization (`lib/verlon.ts`)
 
-Configures the Verlon AI client:
+Configures the OpenAI client against Verlon AI's OpenAI-compatible endpoint:
 
 ```typescript
-import { Verlon } from '@verlon-ai/sdk';
+import OpenAI from 'openai';
 
-export const verlon = new Verlon({
+export const openai = new OpenAI({
   apiKey: process.env.VERLON_API_KEY,
-  baseUrl: process.env.VERLON_BASE_URL,
+  baseURL: 'https://api.verlon.ai/v1',
 });
 ```
 
@@ -185,7 +180,7 @@ The UI uses Tailwind CSS. Customize colors, spacing, and layout in `app/page.tsx
 ### Add Features
 
 Consider adding:
-- Message streaming for real-time responses
+- Message streaming for real-time responses (`stream: true` works out of the box)
 - Message editing and regeneration
 - Conversation export/import
 - User authentication
@@ -237,7 +232,7 @@ Run `pnpm install` to ensure all dependencies are installed correctly.
 ## Learn More
 
 - [Verlon AI Documentation](https://docs.verlon.ai)
-- [Verlon AI SDK](https://www.npmjs.com/package/@verlon-ai/sdk)
+- [OpenAI SDK Compatibility Guide](https://docs.verlon.ai/provider-compatibility/openai)
 - [Next.js Documentation](https://nextjs.org/docs)
 
 ## License
