@@ -4,14 +4,16 @@
   "type": "module",
   "scripts": {
     "basic": "tsx basic.ts",
-    "sizes": "tsx sizes.ts"
+    "sizes": "tsx sizes.ts",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@verlon-ai/sdk": "^1.2.0",
-    "dotenv": "^16.6.1"
+    "dotenv": "^16.6.1",
+    "openai": "^6.17.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0"
   }
 }

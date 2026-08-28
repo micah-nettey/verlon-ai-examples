@@ -17,10 +17,11 @@ These examples ensure that:
 - **[SDK Chat](./sdk-chat)** — basic and streaming chat completions
 - **[SDK Audio](./sdk-audio)** — text-to-speech with voice, format, and speed options
 - **[SDK Images](./sdk-images)** — image generation with sizes and multiple outputs
+- **[SDK Video](./sdk-video)** — async video generation: create a job, poll until it completes, download the mp4
 
 ### Verlon SDK
 
-- **[SDK Video](./sdk-video)** — video generation with size options
+[`@verlon-ai/sdk`](https://www.npmjs.com/package/@verlon-ai/sdk) is Verlon's observability and tracing SDK — it no longer makes inference calls, so it has no example here. The tracing showcase lives in [Agent Loops](../agent-loops).
 
 ### Provider SDK Compatibility (no Verlon SDK required)
 

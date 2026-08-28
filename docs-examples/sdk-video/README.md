@@ -1,6 +1,6 @@
-# SDK Video Generation Examples
+# Video Generation Examples
 
-This directory contains examples for testing the Verlon AI SDK's video generation functionality.
+This directory contains examples for generating videos through Verlon's OpenAI-compatible `/v1/videos` endpoint using the official `openai` package. Video generation is asynchronous: each script creates a video job, polls until it completes, and downloads the result as an mp4. The gate is addressed by putting the gate ID in the `model` field.
 
 ## Setup
 
@@ -19,3 +19,5 @@ This directory contains examples for testing the Verlon AI SDK's video generatio
 pnpm run basic
 pnpm run sizes
 ```
+
+Generated mp4 files are written to this directory (gitignored).

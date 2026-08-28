@@ -13,8 +13,9 @@ import { braveSearch } from '../lib/brave.js';
  *   - a NESTED SUB-AGENT: the summarizer is its own agent gate whose
  *     trace scope opens inside the orchestrator's, so it lands as an
  *     agent span in the SAME trace
- *   - both integration styles at once: the orchestrator uses the
- *     OpenAI SDK, the summarizer uses the Verlon SDK's `task.chat`
+ *   - gate-resolved model selection: the summarizer client puts its
+ *     gate ID in the `model` field, so the gate decides which model
+ *     serves the call
  */
 
 const verlon = new Verlon({
@@ -42,6 +43,10 @@ const planner = new OpenAI({
 const synthesizer = new OpenAI({
   apiKey: process.env.VERLON_API_KEY!,
   ...synthesizeTask.clientOptions('openai'),
+});
+const condenser = new OpenAI({
+  apiKey: process.env.VERLON_API_KEY!,
+  ...summarizeTask.clientOptions('openai'),
 });
 
 const webSearch = verlon.tool('web_search', async (query: string) => {
@@ -74,17 +79,16 @@ async function research(question: string): Promise<string> {
 
     // Nested sub-agent: its own gate, its own tasks, same trace.
     const summary = await summarizer.trace(async () => {
-      const condensed = await summarizeTask.chat({
-        data: {
-          messages: [
-            {
-              role: 'user',
-              content: `Condense these search results into five bullet points:\n${JSON.stringify(searchResults).slice(0, 6000)}`,
-            },
-          ],
-        },
+      const condensed = await condenser.chat.completions.create({
+        model: process.env.RESEARCH_SUM_GATE_ID!,
+        messages: [
+          {
+            role: 'user',
+            content: `Condense these search results into five bullet points:\n${JSON.stringify(searchResults).slice(0, 6000)}`,
+          },
+        ],
       });
-      return condensed.content;
+      return condensed.choices[0].message.content ?? '';
     });
 
     const answer = await synthesizer.chat.completions.create({
