@@ -12,8 +12,8 @@ importers:
         specifier: ^0.71.0
         version: 0.71.2(zod@3.25.76)
       '@verlon-ai/sdk':
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: ^2.6.0
+        version: 2.6.0
       openai:
         specifier: ^6.17.0
         version: 6.37.0(zod@3.25.76)
@@ -202,8 +202,8 @@ packages:
   '@types/node@20.19.40':
     resolution: {integrity: sha512-xxx6M2IpSTnnKcR0cMvIiohkiCx20/oRPtWGbenFygKCGl3zqUzdNjQ/1V4solq1LU+dgv0nQzeGOuqkqZGg0Q==}
 
-  '@verlon-ai/sdk@2.1.1':
-    resolution: {integrity: sha512-kCvdTCY8Mkzmp3Jwsp0/AAD+BQ3Ccvc85k2TWEMCivCr33j7RwneAYZTuIFsakvi7MfhkIsSOjdp+QaJbrQxtg==}
+  '@verlon-ai/sdk@2.6.0':
+    resolution: {integrity: sha512-YVD44q8A5SVPebrkePz7kA3GQqcPIHawekRhz6ndChwAfpmNQmw4ub16B/LK105Mn7GYeG5GQjey+YB4pqS+Hg==}
 
   esbuild@0.27.7:
     resolution: {integrity: sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==}
@@ -353,7 +353,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@verlon-ai/sdk@2.1.1':
+  '@verlon-ai/sdk@2.6.0':
     dependencies:
       yaml: 2.9.0
       zod: 3.25.76
